@@ -94,7 +94,7 @@
             <input type="text"
                    required
                    name="windows-path"
-                   pattern="^[a-zA-Z]:\\((\bwindows\b)|(\bwinnt\b)|(\bwin\b)|(\bdos\b)|(\bmsdos\b))([\\]{1}[A-z]*)?$"
+                   pattern="^([a-zA-Z]:\\)(windows|winnt|win|dos|msdos)([\\][a-zA-Z]*)?$"
                    placeholder="C:\windows\temp">
 
         </li>
@@ -104,7 +104,7 @@
             <input type="text"
                    required
                    name="windows-path-caseins"
-                   pattern="^[a-zA-Z]:\\((\b[Ww][Ii][Nn][Dd][Oo][Ww][Ss]\b)|(\b[Ww][Ii][Nn][Nn][Tt]\b)|(\b[Ww][Ii][Nn]\b)|(\b[Dd][Oo][Ss]\b)|(\b[Mm][Ss][Dd][Oo][Ss]\b))([\\]{1}[A-z]*)?$"
+                   pattern="^[a-zA-Z]:\\([Ww][Ii][Nn][Dd][Oo][Ww][Ss]|[Ww][Ii][Nn][Nn][Tt]|[Ww][Ii][Nn]|[Dd][Oo][Ss]|[Mm][Ss][Dd][Oo][Ss])([\\][a-zA-Z]*)?$"
                    placeholder="C:\windows\temp">
 
         </li>
