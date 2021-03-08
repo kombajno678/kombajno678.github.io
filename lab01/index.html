@@ -15,7 +15,7 @@
             background-color: rgba(255, 0, 0, 0.10);
         }
 
-        .footer{
+        .footer {
             font-style: italic;
         }
 
@@ -29,8 +29,9 @@
                 width: 90%
             }
 
-            li{
-                margin-bottom: 1rem;;
+            li {
+                margin-bottom: 1rem;
+                ;
             }
         }
     </style>
@@ -40,7 +41,7 @@
     <ol>
 
         <li>
-            adres email<br/>
+            adres email<br />
 
             <input type="email"
                    required
@@ -49,7 +50,7 @@
 
         </li>
         <li>
-            kod pocztowy<br/>
+            kod pocztowy<br />
 
             <input type="text"
                    required
@@ -59,7 +60,18 @@
 
         </li>
         <li>
-            numer dowodu<br/>
+            numer nip (z kreskami)
+            <br />
+
+            <input type="text"
+                   required
+                   name="nip-code"
+                   pattern="^([0-9]{3}-[0-9]{2}-[0-9]{2}-[0-9]{3})$|^([0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2})$"
+                   placeholder="123-45-67-819">
+
+        </li>
+        <li>
+            numer dowodu<br />
 
             <input type="text"
                    required
@@ -69,7 +81,7 @@
 
         </li>
         <li>
-            adres ipv4<br/>
+            adres ipv4<br />
 
             <input type="text"
                    required
@@ -79,7 +91,7 @@
 
         </li>
         <li>
-            strona www<br/>
+            strona www<br />
 
             <input type="url"
                    required
@@ -89,7 +101,7 @@
         </li>
         <li>
             ścieżka litera dysku:\katalog systemu (windows, winnt, win, dos, msdos)\katalog podrzędny (np.
-            C:\windows\temp lub d:\msdos).<br/>
+            C:\windows\temp lub d:\msdos).<br />
 
             <input type="text"
                    required
@@ -99,7 +111,8 @@
 
         </li>
         <li>
-            to samo, co w 7a, ale ma pozwalać na użycie zarówno dużych, jak i małych liter (Windows,windows,WinDowS)<br/>
+            to samo, co w 7a, ale ma pozwalać na użycie zarówno dużych, jak i małych liter
+            (Windows,windows,WinDowS)<br />
 
             <input type="text"
                    required
@@ -109,7 +122,7 @@
 
         </li>
         <li>
-            scieżka do pliku w katalogu /etc/ (np. /etc/passwd, /etc/hosts, itp.)<br/>
+            scieżka do pliku w katalogu /etc/ (np. /etc/passwd, /etc/hosts, itp.)<br />
 
             <input type="text"
                    required
@@ -119,7 +132,7 @@
 
         </li>
         <li>
-            adres ipv6<br/>
+            adres ipv6<br />
 
             <input type="text"
                    required
@@ -129,7 +142,7 @@
 
         </li>
         <li>
-            Numer telefonu<br/>
+            Numer telefonu<br />
 
             <input type="tel"
                    required
