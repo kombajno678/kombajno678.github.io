@@ -1,37 +1,88 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <style>
         input:valid {
             border: 5px solid green
         }
+
         input:invalid {
             border: 5px solid red
         }
     </style>
 </head>
+
 <body>
     <ol>
 
-        <li>1) adres email
+        <li>
+            adres email
             <p>
-                <input type="email" name="mail-address">
-                np.: imie.nazwisko@mail.pl
+                <input type="email"
+                       name="mail-address"
+                       placeholder="imie.nazwisko@mail.pl">
             </p>
         </li>
-        <li>2) kod pocztowy</li>
-        <li>3) kod pocztowy</li>
-        <li>4) numer dowodu</li>
-        <li>5) adres ipv4</li>
-        <li>6) strona www</li>
-        <li>7a) ścieżka litera dysku:\katalog systemu (windows, winnt, win, dos, msdos)\katalog podrzędny (np.
-            C:\windows\temp</li>
-        <li>lub d:\msdos).</li>
-        <li>7b) to samo, co w 7a, ale ma pozwalać na użycie zarówno dużych, jak i małych liter (Windows,windows,WinDowS)
+        <li>kod pocztowy
+            <p>
+                <input type="text"
+                       name="postal-code"
+                       pattern="[0-9]{2}-[0-9]{3}"
+                       placeholder="12-345">
+            </p>
         </li>
-        <li>8) scieżka do pliku w katalogu /etc/ (np. /etc/passwd, /etc/hosts, itp.)</li>
-        <li>9) adres ipv6</li>
-        <li>10) Numer telefonu</li>
+        <li>
+            numer dowodu
+            <p>
+                <input type="text"
+                       name="id-number"
+                       pattern="[A-Z]{3}[0-9]{6}"
+                       placeholder="ABC123456">
+            </p>
+        </li>
+        <li>
+            adres ipv4
+            <p>
+                <input type="text"
+                       name="ipv4-address"
+                       pattern="^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$"
+                       placeholder="192.168.0.1">
+            </p>
+        </li>
+        <li>
+            strona www
+            <p>
+                <input type="url"
+                       name="url-address"
+                       placeholder="http://www.google.com">
+            </p>
+        </li>
+        <li>
+            ścieżka litera dysku:\katalog systemu (windows, winnt, win, dos, msdos)\katalog podrzędny (np.
+            C:\windows\temp lub d:\msdos).
+            <p>
+                <input type="text"
+                       name="windows-path"
+                       pattern="^[a-zA-Z]:\\[a-z\\]*$"
+                       placeholder="C:\windows\temp">
+            </p>
+        </li>
+        <li>
+            to samo, co w 7a, ale ma pozwalać na użycie zarówno dużych, jak i małych liter (Windows,windows,WinDowS)
+            <p>
+                <input type="text"
+                       name="windows-path"
+                       pattern="^[a-zA-Z]:\\[A-Za-z\\]*$"
+                       placeholder="C:\windows\temp">
+            </p>
+        </li>
+        <li>
+            scieżka do pliku w katalogu /etc/ (np. /etc/passwd, /etc/hosts, itp.)</li>
+        <li>
+            adres ipv6</li>
+        <li>
+            Numer telefonu</li>
     </ol>
 </body>
 
