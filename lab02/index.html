@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <meta name="author"
+          content="Adam Kowalczyk">
+    <meta name="description"
+          content="IPM lab02">
+
+    <style>
+        input:valid {
+            border: 5px solid green;
+            background-color: rgba(0, 255, 0, 0.10);
+        }
+
+        input:invalid {
+            border: 5px solid red;
+            background-color: rgba(255, 0, 0, 0.10);
+        }
+
+        input:invalid+span:after {
+            position: absolute;
+            content: '✖';
+            padding-left: 5px;
+        }
+
+        input:valid+span:after {
+            position: absolute;
+            content: '✓';
+            padding-left: 5px;
+        }
+
+
+
+        .footer {
+            font-style: italic;
+        }
+
+        @media only screen and (max-width: 600px) {
+            body {
+                font-size: 1rem;
+            }
+
+            input {
+                font-size: 1rem;
+                width: 90%
+            }
+
+            li {
+                margin-bottom: 1rem;
+                ;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <ol>
+
+        <li>
+            Proszę dodać element UI pozwalający na wybranie daty z kalendarza.<br />
+            <input type="date"
+                   name="form-date"
+                   required>
+            <span></span>
+        </li>
+        <li>
+            Proszę dodać element ui wykorzystujący poprzedni punkt ale
+            limitujący wybór do jedno z pracujących dni (pon-pn) w tym tygodniu.<br />
+            <input type="date"
+                   name="form-date-whis-week"
+                   min="2021-03-15"
+                   max="2021-03-19"
+                   required>
+            <span></span>
+        </li>
+        <li>
+            Proszę dodać dwa elementy UI pozwalające na wpisanie godziny<br />
+
+            a) w formacie 12 godzinnym<br />
+            <input type="time"
+                   name="form-date"
+                   required>
+            <span></span><br />
+
+            b) w formacie 24 godzinnym<br />
+            <input type="time"
+                   name="form-date"
+                   required>
+            <span></span><br />
+        </li>
+
+    </ol>
+    <p class="footer">
+        Adam Kowalczyk 239537
+    </p>
+</body>
+
+</html>
