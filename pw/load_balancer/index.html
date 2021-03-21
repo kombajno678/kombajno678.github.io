@@ -1,0 +1,144 @@
+<html>
+
+<head>
+    <script src="./script.js"></script>
+    <link rel="stylesheet"
+          href="./style.css">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+          crossorigin="anonymous">
+</head>
+
+<body class="bg-dark text-light">
+
+    <h2>system's view</h2>
+
+    <div id="header">
+    </div>
+
+
+    <div class="row m-0 w-100">
+        <div class="col p-0">
+            <button class="btn btn-success w-100"
+                    type="button"
+                    id="button-start"
+                    onclick="onButtonStartClick()">
+                start
+            </button>
+        </div>
+        <div class="col p-0"><button class="btn btn-primary  w-100"
+                    type="button"
+                    id="button-step"
+                    onclick="onButtonStepClick(1)">
+                +1 step
+            </button>
+        </div>
+        <div class="col p-0"><button class="btn btn-info w-100"
+                    type="button"
+                    id="button-step"
+                    onclick="onButtonStepClick(-1)">
+                -1 step
+            </button>
+        </div>
+        <div class="col p-0"><button class="btn btn-warning w-100"
+                    type="button"
+                    id="button-pause"
+                    onclick="onButtonPauseClick()">
+                pause
+            </button>
+        </div>
+        <div class="col p-0"><button class="btn btn-danger w-100"
+                    type="button"
+                    id="button-reset"
+                    onclick="onButtonResetClick()">
+                reset
+            </button>
+        </div>
+    </div>
+
+    <h3>drives</h3>
+    <div class="row m-0 w-100">
+
+
+        <div class="col col-xl-2 col-md-3 col-sm-6 col-xs-12 m-0 p-1 disk-container">
+            <p>disk 1</p>
+            <div id="d1-task" class="w-100"></div>
+        </div>
+        <div class="col col-xl-2 col-md-3 col-sm-6 col-xs-12 m-0 p-1 disk-container">
+            <p>disk 2</p>
+            <div id="d2-task" class="w-100"></div>
+        </div>
+        <div class="col col-xl-2 col-md-3 col-sm-6 col-xs-12 m-0 p-1 disk-container">
+            <p>disk 3</p>
+            <div id="d3-task" class="w-100"></div>
+        </div>
+
+        <div class="col col-xl-2 col-md-3 col-sm-6 col-xs-12 m-0 p-1 disk-container">
+            <p>disk 4</p>
+            <div id="d4-task" class="w-100"></div>
+        </div>
+
+        <div class="col col-xl-2 col-md-3 col-sm-6 col-xs-12 m-0 p-1 disk-container">
+            <p>disk 5</p>
+            <div id="d5-task" class="w-100"></div>
+        </div>
+
+
+    </div>
+    <h3>
+        next task to execute
+    </h3>
+    <div class="row m-0 w-100 " id="next-task">
+    </div>
+
+    <h3>queue <span id="queue-sub"></span></h3>
+    <div class="row m-0 w-100" id="queue-box">
+
+
+    </div>
+
+
+    <h3>incoming tasks <span id="inc-sub"></span></h3>
+    <div class="row m-0 w-100" id="tasks-box">
+
+   
+
+    </div>
+
+    <hr/>
+    <hr/>
+    <hr/>
+    <hr/>
+
+
+    <h2>client's view</h2>
+    <div class="row m-0 w-100">
+
+        <div class="col p-1 m-1 client1-box">
+            <h4>client 1</h4>
+            <div id="client1-tasks"></div>
+        </div>
+        <div class="col p-1 m-1 client2-box">
+            <h4>client 2</h4>
+            <div id="client2-tasks"></div>
+        </div>
+        <div class="col p-1 m-1 client3-box">
+            <h4>client 3</h4>
+            <div id="client3-tasks"></div>
+        </div>
+        <div class="col p-1 m-1 client4-box">
+            <h4>client 4</h4>
+            <div id="client4-tasks"></div>
+        </div>
+        <div class="col p-1 m-1 client5-box">
+            <h4>client 5</h4>
+            <div id="client5-tasks"></div>
+        </div>
+
+    </div>
+
+
+</body>
+
+</html>
