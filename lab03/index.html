@@ -79,28 +79,29 @@
 
 
         function generateBox() {
-
             let block = document.createElement('div');
-            let r = Math.random() * 256;
-            let g = Math.random() * 256;
-            let b = Math.random() * 256;
-
-            var randomColor = Math.floor(Math.random()*16777215).toString(16);
-
-
-
+            let randomColor = Math.floor(Math.random() * 16777215).toString(16);
             block.style.backgroundColor = "#" + randomColor;
-            block.setAttribute('class', 'box'); // and make sure myclass has some styles in css
-            block.setAttribute('draggable', 'true'); // and make sure myclass has some styles in css
-
-
+            block.setAttribute('class', 'box');
+            block.setAttribute('id', randomColor);
+            block.setAttribute('draggable', 'true');
+            block.setAttribute('ondragstart', 'dragStart(event)');
             document.getElementById('box-generator-id').appendChild(block);
-            /*
-            <div draggable="true" class="box">
-
-                        </div>
-                        */
         }
+
+
+        function dragStart(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+        function dragDrop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            ev.target.appendChild(document.getElementById(data));
+        }
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
 
     </script>
 </head>
@@ -109,7 +110,9 @@
     <div class="container">
         <div class="platform-area">
 
-            <div class="free-area"></div>
+            <div class="free-area"
+                 ondragover="allowDrop(event)"
+                 ondrop="dragDrop(event)"></div>
             <div class="platform"></div>
 
 
