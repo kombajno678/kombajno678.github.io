@@ -65,7 +65,6 @@
             width: 160px;
             height: 160px;
             border: 3px solid rgb(230, 230, 230);
-            padding: 3rem
         }
 
         .box {
@@ -137,6 +136,8 @@
 
         function dragStart(ev) {
             ev.dataTransfer.setData("text", ev.target.id);
+            ev.dataTransfer.setData("offsetX", ev.layerX);
+            ev.dataTransfer.setData("offsetY", ev.layerY);
         }
 
         function clipBlockXY(x, y, id) {
@@ -229,6 +230,7 @@
             return [boxX, boxY, collision, floor]
         }
         function dragDrop(ev) {
+            console.log('drag stop: ', ev.layerX, ev.layerY);
 
             ev.preventDefault();
             let block = document.getElementById(ev.dataTransfer.getData("text"));
@@ -237,6 +239,18 @@
 
             let boxX = ev.clientX;
             let boxY = ev.clientY;
+
+            let offsetX = 80 - ev.dataTransfer.getData("offsetX");
+            let offsetY = 80 - ev.dataTransfer.getData("offsetY");
+
+            console.log('offset : ', offsetX, offsetY);
+            if (Math.abs(offsetX) <= 160 && Math.abs(offsetY) <= 160) {
+                boxX += offsetX;
+                boxY += offsetY;
+            }
+
+
+
 
 
 
@@ -295,8 +309,8 @@
                     block.setAttribute('velocityY', '0.0');
 
 
-                } 
-                if(floor || !col) {
+                }
+                if (floor || !col) {
                     blockX = newXY[0];
                     blockY = newXY[1];
 
