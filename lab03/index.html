@@ -112,10 +112,10 @@
 
             let allBoxes = document.querySelectorAll('div.box');
             allBoxes[0].parentNode.removeChild(allBoxes[0]);
-            if(allBoxes.length > 0){
+            if (allBoxes.length > 0) {
                 clearBoxes();
             }
-            
+
 
         }
 
@@ -152,19 +152,7 @@
             let boxX = ev.clientX;
             let boxY = ev.clientY;
 
-            if (boxY + 80 > areaY) {
-                boxY = areaY - 80;
-            }
-            if (boxY - 80 < 0) {
-                boxY = 80;
-            }
 
-            if (boxX + 80 > areaX) {
-                boxX = areaX - 80;
-            }
-            if (boxX - 80 < 0) {
-                boxX = 80;
-            }
             let allBoxes = document.querySelectorAll('div.box');
 
             for (let i = 0; i < allBoxes.length; i++) {
@@ -191,11 +179,29 @@
 
                         if (RectA.X1 < RectB.X2 && RectA.X2 > RectB.X1 &&
                             RectA.Y1 < RectB.Y2 && RectA.Y2 > RectB.Y1) {
-                            if (RectA.X1 < RectB.X2 && RectA.X2 > RectB.X1) {
-                                boxX += 1;
+                            let xd = Math.abs(otherX - boxX);
+                            let yd = Math.abs(otherY - boxY);
+
+                            if (RectA.X1 < RectB.X2 && RectA.X2 > RectB.X1 && xd > yd) {
+
+                                if (boxX > otherX) {
+                                    boxX += 1;
+                                }
+                                else {
+                                    boxX -= 1;
+                                }
                             }
-                            if (RectA.Y1 < RectB.Y2 && RectA.Y2 > RectB.Y1) {
-                                boxY += 1;
+
+                            if (RectA.Y1 < RectB.Y2 && RectA.Y2 > RectB.Y1 && yd >= xd) {
+
+                                if (boxY > otherY) {
+                                    boxY += 1;
+                                }
+                                else {
+                                    boxY -= 1;
+                                }
+
+
                             }
 
                         } else {
@@ -210,7 +216,19 @@
                 }
             }
 
+            if (boxY + 80 > areaY) {
+                boxY = areaY - 80;
+            }
+            if (boxY - 80 < 0) {
+                boxY = 80;
+            }
 
+            if (boxX + 80 > areaX) {
+                boxX = areaX - 80;
+            }
+            if (boxX - 80 < 0) {
+                boxX = 80;
+            }
 
             block.style.left = boxX - 80 + 'px';
             block.style.top = boxY - 80 + 'px';
