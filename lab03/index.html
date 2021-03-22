@@ -174,7 +174,7 @@
                             RectA.Y1 < RectB.Y2 && RectA.Y2 > RectB.Y1) {
                             let xd = Math.abs(otherX - boxX);
                             let yd = Math.abs(otherY - boxY);
-                            collision = true;
+
 
                             if (RectA.X1 < RectB.X2 && RectA.X2 > RectB.X1 && xd > yd) {
 
@@ -184,11 +184,11 @@
                                 else {
                                     boxX -= 1;
                                 }
-                                
+
                             }
 
                             if (RectA.Y1 < RectB.Y2 && RectA.Y2 > RectB.Y1 && yd >= xd) {
-
+                                collision = true;
                                 if (boxY > otherY) {
                                     boxY += 1;
                                 }
@@ -218,11 +218,9 @@
 
             if (boxX + 80 > areaX) {
                 boxX = areaX - 80;
-                collision = true;
             }
             if (boxX - 80 < 0) {
                 boxX = 80;
-                collision = true;
             }
 
             return [boxX, boxY, collision]
@@ -273,14 +271,14 @@
                 let blockX = parseFloat(block.style.left.substring(0, block.style.left.length - 2));
                 let blockY = parseFloat(block.style.top.substring(0, block.style.top.length - 2));
 
-                
+
                 blockX = blockX + 80;
                 blockY = blockY + 80;
-                
+
                 let initialY = blockY;
 
                 //apply force
-                blockY += parseFloat(block.getAttribute('velocityY')) ;
+                blockY += parseFloat(block.getAttribute('velocityY'));
                 block.setAttribute('velocityY', '' + (parseFloat(block.getAttribute('velocityY')) + 0.5));
 
                 let newXY = clipBlockXY(blockX, blockY, block.id);
@@ -289,7 +287,7 @@
                 blockY = newXY[1];
                 let col = newXY[2];
 
-                if(col){
+                if (col) {
                     block.setAttribute('velocityY', '0.0');
                 }
 
@@ -309,7 +307,7 @@
             }, false);
 
         function stopGravity() {
-            if(!gravityIntervalId){
+            if (!gravityIntervalId) {
                 clearInterval(gravityIntervalId);
 
             }
