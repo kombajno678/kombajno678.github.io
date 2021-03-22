@@ -141,6 +141,7 @@
 
         function clipBlockXY(x, y, id) {
             let collision = false;
+            let floor = false;
             //get free area size
             let area = document.getElementById('free-area-id');
             let areaY = area.clientHeight
@@ -189,7 +190,7 @@
                             }
 
                             if (RectA.Y1 < RectB.Y2 && RectA.Y2 > RectB.Y1 && yd >= xd) {
-                                
+
                                 if (boxY > otherY) {
                                     boxY += 1;
                                 }
@@ -215,6 +216,7 @@
             if (boxY - 80 < 0) {
                 boxY = 80;
                 collision = true;
+                floor = true;
             }
 
             if (boxX + 80 > areaX) {
@@ -224,7 +226,7 @@
                 boxX = 80;
             }
 
-            return [boxX, boxY, collision]
+            return [boxX, boxY, collision, floor]
         }
         function dragDrop(ev) {
 
@@ -278,24 +280,32 @@
 
                 let initialY = blockY;
 
-                //apply force
+                //apply velocity
                 blockY += parseFloat(block.getAttribute('velocityY'));
-                block.setAttribute('velocityY', '' + (parseFloat(block.getAttribute('velocityY')) + 0.5));
+                //apply force
+                block.setAttribute('velocityY', '' + (parseFloat(block.getAttribute('velocityY')) + 1));
 
                 let newXY = clipBlockXY(blockX, blockY, block.id);
 
-                blockX = newXY[0];
-                blockY = newXY[1];
+
                 let col = newXY[2];
+                let floor = newXY[2];
 
                 if (col) {
                     block.setAttribute('velocityY', '0.0');
-                    blockY = initialY;
+
+
+                } 
+                if(floor || !col) {
+                    blockX = newXY[0];
+                    blockY = newXY[1];
+
+                    block.style.top = blockY - 80 + 'px';
+
+                    block.innerHTML = `x = ${blockX - 80}<br>y = ${blockY - 80}<br>V = ` + block.getAttribute('velocityY');
                 }
 
-                block.style.top = blockY - 80 + 'px';
 
-                block.innerHTML = `x = ${blockX - 80}<br>y = ${blockY - 80}<br>V = ` + block.getAttribute('velocityY');
 
 
             }
@@ -316,7 +326,7 @@
             }
         }
         function startGravity() {
-            if (!gravityIntervalId){
+            if (!gravityIntervalId) {
                 gravityIntervalId = setInterval(gravityLoop, 25);
 
             }
