@@ -143,7 +143,6 @@
             let block = document.getElementById(ev.dataTransfer.getData("text"));
             block.style.position = 'fixed';
 
-
             //get free area size
             let area = document.getElementById('free-area-id');
             let areaY = area.clientHeight
@@ -157,12 +156,8 @@
 
             for (let i = 0; i < allBoxes.length; i++) {
                 if (allBoxes[i].id != block.id) {
-                    // console.log(allBoxes[i].offsetLeft + 80)
-                    // console.log(allBoxes[i].offsetTop + 80)
-
                     let otherX = allBoxes[i].offsetLeft + 80;
                     let otherY = allBoxes[i].offsetTop + 80;
-
                     while (true) {
                         let RectA = {
                             X1: boxX - 80,
@@ -209,10 +204,6 @@
                         }
                     }
 
-
-
-
-
                 }
             }
 
@@ -245,8 +236,6 @@
             ev.preventDefault();
         }
 
-
-
     </script>
 </head>
 
@@ -259,15 +248,11 @@
                  ondragover="allowDrop(event)"
                  ondrop="dragDrop(event)"></div>
 
-
             <div class="platform"></div>
-
 
         </div>
 
-
         <div class="button-area">
-
 
             <button type="button"
                     class="button-area-text"
