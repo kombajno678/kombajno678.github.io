@@ -130,6 +130,7 @@
             block.setAttribute('draggable', 'true');
             block.setAttribute('ondragstart', 'dragStart(event)');
             block.setAttribute('ondrop', 'cancelDrop(event)');
+            block.setAttribute('velocityY', '0.0');
             document.getElementById('box-generator-id').appendChild(block);
         }
 
@@ -137,25 +138,22 @@
         function dragStart(ev) {
             ev.dataTransfer.setData("text", ev.target.id);
         }
-        function dragDrop(ev) {
 
-            ev.preventDefault();
-            let block = document.getElementById(ev.dataTransfer.getData("text"));
-            block.style.position = 'fixed';
-
+        function clipBlockXY(x, y, id) {
+            let collision = false;
             //get free area size
             let area = document.getElementById('free-area-id');
             let areaY = area.clientHeight
             let areaX = area.clientWidth
 
-            let boxX = ev.clientX;
-            let boxY = ev.clientY;
+            let boxX = x;
+            let boxY = y;
 
 
-            let allBoxes = document.querySelectorAll('div.box');
+            let allBoxes = document.querySelectorAll('#free-area-id > div.box');
 
             for (let i = 0; i < allBoxes.length; i++) {
-                if (allBoxes[i].id != block.id) {
+                if (allBoxes[i].id != id) {
                     let otherX = allBoxes[i].offsetLeft + 80;
                     let otherY = allBoxes[i].offsetTop + 80;
                     while (true) {
@@ -176,6 +174,7 @@
                             RectA.Y1 < RectB.Y2 && RectA.Y2 > RectB.Y1) {
                             let xd = Math.abs(otherX - boxX);
                             let yd = Math.abs(otherY - boxY);
+                            collision = true;
 
                             if (RectA.X1 < RectB.X2 && RectA.X2 > RectB.X1 && xd > yd) {
 
@@ -185,6 +184,7 @@
                                 else {
                                     boxX -= 1;
                                 }
+                                
                             }
 
                             if (RectA.Y1 < RectB.Y2 && RectA.Y2 > RectB.Y1 && yd >= xd) {
@@ -209,17 +209,40 @@
 
             if (boxY + 80 > areaY) {
                 boxY = areaY - 80;
+                collision = true;
             }
             if (boxY - 80 < 0) {
                 boxY = 80;
+                collision = true;
             }
 
             if (boxX + 80 > areaX) {
                 boxX = areaX - 80;
+                collision = true;
             }
             if (boxX - 80 < 0) {
                 boxX = 80;
+                collision = true;
             }
+
+            return [boxX, boxY, collision]
+        }
+        function dragDrop(ev) {
+
+            ev.preventDefault();
+            let block = document.getElementById(ev.dataTransfer.getData("text"));
+            block.style.position = 'fixed';
+
+
+            let boxX = ev.clientX;
+            let boxY = ev.clientY;
+
+
+
+            let newXY = clipBlockXY(boxX, boxY, block.id);
+
+            boxX = newXY[0];
+            boxY = newXY[1];
 
             block.style.left = boxX - 80 + 'px';
             block.style.top = boxY - 80 + 'px';
@@ -234,6 +257,65 @@
 
         function cancelDrop(ev) {
             ev.preventDefault();
+        }
+
+        function gravityLoop() {
+            let allBoxes = document.querySelectorAll('#free-area-id > div.box');
+
+            //get free area size
+            let area = document.getElementById('free-area-id');
+            let areaY = area.clientHeight
+            let areaX = area.clientWidth
+
+            for (let i = 0; i < allBoxes.length; i++) {
+                let block = allBoxes[i];
+
+                let blockX = parseFloat(block.style.left.substring(0, block.style.left.length - 2));
+                let blockY = parseFloat(block.style.top.substring(0, block.style.top.length - 2));
+
+                
+                blockX = blockX + 80;
+                blockY = blockY + 80;
+                
+                let initialY = blockY;
+
+                //apply force
+                blockY += parseFloat(block.getAttribute('velocityY')) ;
+                block.setAttribute('velocityY', '' + (parseFloat(block.getAttribute('velocityY')) + 0.5));
+
+                let newXY = clipBlockXY(blockX, blockY, block.id);
+
+                blockX = newXY[0];
+                blockY = newXY[1];
+                let col = newXY[2];
+
+                if(col){
+                    block.setAttribute('velocityY', '0.0');
+                }
+
+                block.style.top = blockY - 80 + 'px';
+
+                block.innerHTML = `x = ${blockX - 80}<br>y = ${blockY - 80}<br>V = ` + block.getAttribute('velocityY');
+
+
+            }
+        }
+
+        var gravityIntervalId = null;
+
+        window.addEventListener('load',
+            function () {
+                startGravity();
+            }, false);
+
+        function stopGravity() {
+            if(!gravityIntervalId){
+                clearInterval(gravityIntervalId);
+
+            }
+        }
+        function startGravity() {
+            gravityIntervalId = setInterval(gravityLoop, 25);
         }
 
     </script>
@@ -260,6 +342,14 @@
             <button type="button"
                     class="button-area-text"
                     onclick="clearBoxes()">Wyczysc</button>
+
+            <button type="button"
+                    class="button-area-text"
+                    onclick="startGravity()">startGravity</button>
+
+            <button type="button"
+                    class="button-area-text"
+                    onclick="stopGravity()">stopGravity</button>
 
             <div class="box-generator"
                  id="box-generator-id">
