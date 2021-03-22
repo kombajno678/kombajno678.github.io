@@ -108,6 +108,18 @@
         }
 
 
+        function clearBoxes() {
+
+            let allBoxes = document.querySelectorAll('div.box');
+            allBoxes[0].parentNode.removeChild(allBoxes[0]);
+            if(allBoxes.length > 0){
+                clearBoxes();
+            }
+            
+
+        }
+
+
         function generateBox() {
             let block = document.createElement('div');
             let colorIndex = Math.floor(Math.random() * defaultPalette['500'].length);
@@ -140,21 +152,71 @@
             let boxX = ev.clientX;
             let boxY = ev.clientY;
 
-            if(boxY+80 > areaY){
-                boxY = areaY-80;
+            if (boxY + 80 > areaY) {
+                boxY = areaY - 80;
             }
-            if(boxY-80 < 0){
+            if (boxY - 80 < 0) {
                 boxY = 80;
             }
 
-            if(boxX+80 > areaX){
-                boxX = areaX-80;
+            if (boxX + 80 > areaX) {
+                boxX = areaX - 80;
             }
-            if(boxX-80 < 0){
+            if (boxX - 80 < 0) {
                 boxX = 80;
             }
-            block.style.left = boxX-80 + 'px';
-            block.style.top = boxY-80 + 'px';
+            let allBoxes = document.querySelectorAll('div.box');
+
+            for (let i = 0; i < allBoxes.length; i++) {
+                if (allBoxes[i].id != block.id) {
+                    // console.log(allBoxes[i].offsetLeft + 80)
+                    // console.log(allBoxes[i].offsetTop + 80)
+
+                    let otherX = allBoxes[i].offsetLeft + 80;
+                    let otherY = allBoxes[i].offsetTop + 80;
+
+                    while (true) {
+                        let RectA = {
+                            X1: boxX - 80,
+                            Y1: boxY - 80,
+                            X2: boxX + 80,
+                            Y2: boxY + 80,
+                        }
+                        let RectB = {
+                            X1: otherX - 80,
+                            Y1: otherY - 80,
+                            X2: otherX + 80,
+                            Y2: otherY + 80,
+                        }
+
+                        if (RectA.X1 < RectB.X2 && RectA.X2 > RectB.X1 &&
+                            RectA.Y1 < RectB.Y2 && RectA.Y2 > RectB.Y1) {
+                            if (RectA.X1 < RectB.X2 && RectA.X2 > RectB.X1) {
+                                boxX += 1;
+                            }
+                            if (RectA.Y1 < RectB.Y2 && RectA.Y2 > RectB.Y1) {
+                                boxY += 1;
+                            }
+
+                        } else {
+                            break;
+                        }
+                    }
+
+
+
+
+
+                }
+            }
+
+
+
+            block.style.left = boxX - 80 + 'px';
+            block.style.top = boxY - 80 + 'px';
+
+            block.innerHTML = `x = ${boxX - 80}<br>y = ${boxY - 80}`;
+
             ev.target.appendChild(block);
         }
         function allowDrop(ev) {
@@ -178,20 +240,26 @@
                  id="free-area-id"
                  ondragover="allowDrop(event)"
                  ondrop="dragDrop(event)"></div>
+
+
             <div class="platform"></div>
 
 
-
         </div>
+
+
         <div class="button-area">
+
+
             <button type="button"
                     class="button-area-text"
                     onclick="generateBox()">Generuj klocek</button>
+            <button type="button"
+                    class="button-area-text"
+                    onclick="clearBoxes()">Wyczysc</button>
 
             <div class="box-generator"
                  id="box-generator-id">
-
-
 
             </div>
         </div>
