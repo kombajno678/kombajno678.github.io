@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <meta name="author"
+          content="Adam Kowalczyk">
+    <meta name="description"
+          content="IPM lab03">
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh
+        }
+
+        .container:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .platform-area,
+        .button-area {
+            float: left;
+            height: 100%;
+        }
+
+        .platform-area {
+            width: 80%;
+        }
+
+        .free-area {
+            height: 90%;
+
+            width: 100%;
+        }
+
+        .platform {
+            height: 10%;
+            width: 100%;
+            background-color: black
+        }
+
+        .button-area {
+
+            width: 20%;
+        }
+
+        .button-area-text {
+            text-align: center;
+            font-size: larger;
+        }
+
+        .box-generator {
+            margin: auto;
+            margin-top: 40%;
+            width: 7rem;
+            height: 7rem;
+            border: 5px solid black;
+            padding: 3rem
+        }
+
+        .box {
+            width: 7rem;
+            height: 7rem;
+            border: 1px solid black;
+        }
+    </style>
+
+    <script>
+
+
+        function generateBox() {
+
+            let block = document.createElement('div');
+            let r = Math.random() * 256;
+            let g = Math.random() * 256;
+            let b = Math.random() * 256;
+
+            var randomColor = Math.floor(Math.random()*16777215).toString(16);
+
+
+
+            block.style.backgroundColor = "#" + randomColor;
+            block.setAttribute('class', 'box'); // and make sure myclass has some styles in css
+            block.setAttribute('draggable', 'true'); // and make sure myclass has some styles in css
+
+
+            document.getElementById('box-generator-id').appendChild(block);
+            /*
+            <div draggable="true" class="box">
+
+                        </div>
+                        */
+        }
+
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="platform-area">
+
+            <div class="free-area"></div>
+            <div class="platform"></div>
+
+
+
+        </div>
+        <div class="button-area">
+            <button type="button"
+                    class="button-area-text"
+                    onclick="generateBox()">Generuj klocek</button>
+
+            <div class="box-generator"
+                 id="box-generator-id">
+
+
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
