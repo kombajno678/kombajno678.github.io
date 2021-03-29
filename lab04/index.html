@@ -8,7 +8,6 @@
           content="Adam Kowalczyk">
     <meta name="description"
           content="IPM lab04">
-
     <style>
         html,
         body {
@@ -21,13 +20,12 @@
             margin: auto;
         }
     </style>
-
     <script>
-
         var dragging = null;
 
         document.addEventListener('dragstart', function (event) {
             dragging = event.target;
+            dragging.style.opacity = 0.5;
             event.dataTransfer.setData('text/html', dragging);
         });
 
@@ -45,17 +43,20 @@
 
         document.addEventListener('drop', function (event) {
             event.preventDefault();
+            dragging.style.opacity = 1;
             event.target.style['border-bottom'] = '';
-            event.target.parentNode.insertBefore(dragging, event.target.nextSibling);
-        });
+            try {
+                event.target.parentNode.insertBefore(dragging, event.target.nextSibling);
+            } catch (error) {
+            }
+            dragging = null;
 
+        });
     </script>
 </head>
 
 <body>
-
     <div class="list list-container">
-
         <ol contenteditable="true">
             <li draggable="true">
                 audi
@@ -70,7 +71,6 @@
             </li>
             <li draggable="true">
                 volkswagen
-
                 <ol>
                     <li draggable="true">
                         golf
@@ -79,40 +79,24 @@
                         passat
                     </li>
                 </ol>
-
             </li>
             <li draggable="true">
                 bmw
-
-
             </li>
             <li draggable="true">
                 renault
-
             </li>
             <li draggable="true">
                 peugeot
-
-
             </li>
             <li draggable="true">
                 opel
-
-
             </li>
             <li draggable="true">
                 seat
-
-
             </li>
-
-
-
         </ol>
-
     </div>
-
-
 </body>
 
 </html>
