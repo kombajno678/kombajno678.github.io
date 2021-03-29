@@ -16,147 +16,93 @@
             padding: 0;
         }
 
-
-        .my-li{
-            border: 1px solid grey;
-            height:2rem;
-        }
-
-
-        .list-container{
-            max-width:600px;
-            margin:auto;
+        .list-container {
+            max-width: 600px;
+            margin: auto;
         }
     </style>
 
     <script>
 
-        function dragStart(ev) {
-            ev.dataTransfer.setData("text", ev.target.id);
-            ev.dataTransfer.setData("offsetX", ev.layerX);
-            ev.dataTransfer.setData("offsetY", ev.layerY);
-        }
+        var dragging = null;
 
-        function dragDrop(ev) {
-            ev.preventDefault();
-            ev.target.appendChild(block);
-        }
+        document.addEventListener('dragstart', function (event) {
+            dragging = event.target;
+            event.dataTransfer.setData('text/html', dragging);
+        });
 
-        window.addEventListener('load', () => {
+        document.addEventListener('dragover', function (event) {
+            event.preventDefault();
+        });
 
-        })
+        document.addEventListener('dragenter', function (event) {
+            event.target.style['border-bottom'] = 'solid 2px grey';
+        });
+
+        document.addEventListener('dragleave', function (event) {
+            event.target.style['border-bottom'] = '';
+        });
+
+        document.addEventListener('drop', function (event) {
+            event.preventDefault();
+            event.target.style['border-bottom'] = '';
+            event.target.parentNode.insertBefore(dragging, event.target.nextSibling);
+        });
 
     </script>
 </head>
 
 <body>
 
+    <div class="list list-container">
 
+        <ol contenteditable="true">
+            <li draggable="true">
+                audi
+            </li>
+            <li draggable="true">
+                volkswagen
 
-    <h1>DRAG AND DROP</h1>
-    <div class="list">
-        
-    </div>
-    <div class="list-container">
-        
-        <ol>
-            <li class="draggable my-li"
-                draggable="true">audi</li>
-            <li class="draggable my-li"
-                draggable="true">volkswagen</li>
-            <li class="draggable my-li"
-                draggable="true">bmw</li>
-            <li class="draggable my-li"
-                draggable="true">renault</li>
-            <li class="draggable my-li"
-                draggable="true">peugeot</li>
+            </li>
+            <li draggable="true">
+                bmw
+
+            </li>
+            <li draggable="true">
+                renault
+
+            </li>
+            <li draggable="true">
+                peugeot
+
+            </li>
+            <ol contenteditable="true">
+                <li draggable="true">
+                    audi
+                </li>
+                <li draggable="true">
+                    volkswagen
+
+                </li>
+                <li draggable="true">
+                    bmw
+
+                </li>
+                <li draggable="true">
+                    renault
+
+                </li>
+                <li draggable="true">
+                    peugeot
+
+                </li>
+
+            </ol>
+
 
         </ol>
-        <input type="text"
-               class="input"
-               placeholder="Nowy element" />
-        <button type="button" id="add-button" onclick="addNewItem()">Dodaj</button>
+
     </div>
-    
-
-    <script>
-
-        var remove = document.querySelector('.draggable');
-
-        function dragStart(e) {
-            dragSrcEl = this;
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/html', this.innerHTML);
-        };
-
-        function dragEnter(e) {
-            this.classList.add('over');
-        }
-
-        function dragLeave(e) {
-            e.stopPropagation();
-            this.classList.remove('over');
-        }
-
-        function dragOver(e) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            return false;
-        }
-
-        function dragDrop(e) {
-            if (dragSrcEl != this) {
-                dragSrcEl.innerHTML = this.innerHTML;
-                this.innerHTML = e.dataTransfer.getData('text/html');
-            }
-            return false;
-        }
-
-        function dragEnd(e) {
-            var listItens = document.querySelectorAll('.draggable');
-            [].forEach.call(listItens, function (item) {
-                item.classList.remove('over');
-            });
-            this.style.opacity = '1';
-        }
-
-        function addEventsDragAndDrop(el) {
-            el.addEventListener('dragstart', dragStart, false);
-            el.addEventListener('dragenter', dragEnter, false);
-            el.addEventListener('dragover', dragOver, false);
-            el.addEventListener('dragleave', dragLeave, false);
-            el.addEventListener('drop', dragDrop, false);
-            el.addEventListener('dragend', dragEnd, false);
-        }
-
-        var listItens = document.querySelectorAll('.draggable');
-        [].forEach.call(listItens, function (item) {
-            addEventsDragAndDrop(item);
-        });
-
-        function addNewItem() {
-            var newItem = document.querySelector('.input').value;
-            if (newItem != '') {
-                document.querySelector('.input').value = '';
-
-
-                var li = document.createElement('li');
-                var attr = document.createAttribute('draggable');
-                var ul = document.querySelector('ol');
-
-
-                li.className = 'draggable';
-                attr.value = 'true';
-                li.setAttributeNode(attr);
-                li.appendChild(document.createTextNode(newItem));
-                ul.appendChild(li);
-                addEventsDragAndDrop(li);
-            }
-        }
-
-
-    </script>
-
 
 
 </body>
