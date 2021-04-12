@@ -29,6 +29,7 @@ request.onerror = (event) => {
 request.onsuccess = (event) => {
     db = request.result;
     console.log("request success: ", event);
+    readAll();
 
 };
 clientData = [{
@@ -97,6 +98,9 @@ function addClient() {
 
 
 function readAll() {
+    if(!db){
+        return;
+    }
     var objectStore = db.transaction("client").objectStore("client");
 
     let table = document.getElementById('table');
@@ -137,7 +141,7 @@ function remove(id) {
 
 
 window.onload = () => {
-    readAll();
+    //readAll();
 }
 
 
