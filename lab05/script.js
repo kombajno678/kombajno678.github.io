@@ -105,7 +105,6 @@ function readAll() {
             row.id = cursor.key;
 
             row.innerHTML = `
-                <div class="col">${cursor.value.id}</div>
                 <div class="col">${cursor.value.name}</div>
                 <div class="col">${cursor.value.email}</div>
                 <div class="col">${cursor.value.tel}</div>
