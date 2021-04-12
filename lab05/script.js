@@ -93,6 +93,7 @@ function addClient() {
 
     request.onerror = (event) => {
         console.error('error while adding new client', event);
+        alert("blad przy dodawaniu nowego klienta, adres email musi być unikalny");
     }
 }
 
