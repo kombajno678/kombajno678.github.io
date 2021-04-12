@@ -56,8 +56,7 @@ request.onupgradeneeded = (event) => {
         unique: true
     });
 
-    objectStore.transaction.oncomplete = function (event) {
-        // Store values in the newly created objectStore.
+    objectStore.transaction.oncomplete = (event) => {
         var customerObjectStore = db.transaction("client", "readwrite").objectStore("client");
         clientData.forEach(customerObjectStore.add);
         console.log('added', clientData)
@@ -86,12 +85,12 @@ function addClient() {
         .objectStore("client")
         .add(client);
 
-    request.onsuccess = function (event) {
+    request.onsuccess = (event) => {
         console.log('added new client', event);
         readAll();
     };
 
-    request.onerror = function (event) {
+    request.onerror = (event) => {
         console.error('error while adding new client', event);
     }
 }
@@ -103,7 +102,7 @@ function readAll() {
     let table = document.getElementById('table');
     table.innerHTML = '';
 
-    objectStore.openCursor().onsuccess = function (event) {
+    objectStore.openCursor().onsuccess = (event) => {
         var cursor = event.target.result;
 
         if (cursor) {
@@ -131,9 +130,7 @@ function remove(id) {
             .objectStore("client")
             .delete(id);
 
-        request.onsuccess = function (event) {
-            readAll();
-        };
+        request.onsuccess = (event) => readAll();
     }
 
 }
@@ -142,11 +139,6 @@ function remove(id) {
 window.onload = () => {
     readAll();
 }
-
-
-
-
-
 
 
 
