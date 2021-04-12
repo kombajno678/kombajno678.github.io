@@ -67,6 +67,13 @@ request.onupgradeneeded = (event) => {
 
 
 function addClient() {
+
+    if (!document.getElementById(formIds.name).checkValidity() ||
+        !document.getElementById(formIds.email).checkValidity() ||
+        !document.getElementById(formIds.tel).checkValidity()) {
+        alert("invalid form");
+        return;
+    }
     let client = {
         id: null,
         name: document.getElementById(formIds.name).value,
