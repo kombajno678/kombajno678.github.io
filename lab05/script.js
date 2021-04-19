@@ -186,7 +186,7 @@ function readAll(filterfields, searchWords) {
                 console.log(searchWords);
 
 
-                searchWords.forEach(w=> {
+                if(searchWords.filter(w=> {
                     w = w.toLowerCase();
                     if(
                     cursor.value.name.toLowerCase().includes(w) || 
@@ -195,9 +195,14 @@ function readAll(filterfields, searchWords) {
                     cursor.value.idnr.toLowerCase().includes(w) || 
                     cursor.value.address.toLowerCase().includes(w)
                     ){
-                        addChild = true;
+                        return true;
                     }
-                })
+                    return false
+                }).length == searchWords.length){
+                    addChild = true;
+                }
+
+
             }
 
 
