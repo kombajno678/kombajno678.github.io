@@ -95,23 +95,24 @@
             </button>
         </ul>
 
-        <div class="google">
-            <div class="row">
+        <div class="google m-0 p-0 w-100 ">
+            <div class="m-0 p-0 w-100 row spacer"></div>
+            <div class="m-0 p-0 w-100 row">
                 <div class="col-12 text-center ">
                     <h1 class="logo">
                         <b>
-                        <span class="c-blue">S</span>
-                        <span class="c-red">e</span>
-                        <span class="c-yell">a</span>
-                        <span class="c-blue">r</span>
-                        <span class="c-gren">c</span>
-                        <span class="c-red">h</span>
-                    </b>
+                            <span class="c-blue">S</span>
+                            <span class="c-red">e</span>
+                            <span class="c-yell">a</span>
+                            <span class="c-blue">r</span>
+                            <span class="c-gren">c</span>
+                            <span class="c-red">h</span>
+                        </b>
                     </h1>
-                    
+
                 </div>
             </div>
-            <div class="row">
+            <div class="m-0 p-0 w-100 row">
                 <div class="col-12 text-center">
                     <input type="text"
                            id="google-field"
@@ -119,75 +120,94 @@
                            placeholder="search...">
                 </div>
             </div>
-            <div class="row">
+            <div class="m-0 p-0 w-100 row">
 
-                <div class="col-12 text-center">
+                <div class="col-0 col-md-4 m-0 text-center"></div>
+                <div class="col-6 col-md-2 p-0 m-0 text-center">
                     <button type="button"
+                            class="w-100 m-0"
                             onclick="Search()">Search</button>
-                    <button type="button" disabled
+
+
+                </div>
+
+                <div class="col-6 col-md-2  p-0 m-0 text-center">
+
+                    <button type="button"
+                            class="w-100 m-0"
+                            disabled
                             onclick="Lucky()">Lucky</button>
+
                 </div>
+                <div class="col-0 col-md-4 m-0 text-center"></div>
+
+
+
+
 
 
             </div>
 
-            <div class="row"></div>
+            <div class="m-0 p-0 w-100 row spacer"></div>
         </div>
 
 
+        <div class="container-fluid container-scroll m-0 p-0 w-100">
+            <div class="table m-0">
+                <b>
+                    <div class="row m-0 header-row">
+                        <div class="col-2 overflow">
+                            <input type="text"
+                                   onkeyup="applyFilter()"
+                                   placeholder="imie nazwisko"
+                                   id="filter-name"
+                                   class="filter-field">
+                        </div>
+                        <div class="col overflow">
+                            <input type="text"
+                                   onkeyup="applyFilter()"
+                                   placeholder="email"
+                                   id="filter-email"
+                                   class="filter-field">
 
-        <div class="table w-100 m-0">
-            <b>
-                <div class="row w-100 m-0 header-row">
-                    <div class="col-2 overflow">
-                        <input type="text"
-                               onkeyup="applyFilter()"
-                               placeholder="imie nazwisko"
-                               id="filter-name"
-                               class="filter-field">
-                    </div>
-                    <div class="col overflow">
-                        <input type="text"
-                               onkeyup="applyFilter()"
-                               placeholder="email"
-                               id="filter-email"
-                               class="filter-field">
+                        </div>
+                        <div class="col-2 overflow">
+                            <input type="text"
+                                   onkeyup="applyFilter()"
+                                   placeholder="tel"
+                                   id="filter-tel"
+                                   class="filter-field">
 
-                    </div>
-                    <div class="col-2 overflow">
-                        <input type="text"
-                               onkeyup="applyFilter()"
-                               placeholder="tel"
-                               id="filter-tel"
-                               class="filter-field">
+                        </div>
+                        <div class="col-2 overflow">
+                            <input type="text"
+                                   onkeyup="applyFilter()"
+                                   placeholder="nr dowodu"
+                                   id="filter-idnr"
+                                   class="filter-field">
+                        </div>
+                        <div class="col-2 overflow">
+                            <input type="text"
+                                   onkeyup="applyFilter()"
+                                   placeholder="adres"
+                                   id="filter-address"
+                                   class="filter-field">
 
-                    </div>
-                    <div class="col-2 overflow">
-                        <input type="text"
-                               onkeyup="applyFilter()"
-                               placeholder="nr dowodu"
-                               id="filter-idnr"
-                               class="filter-field">
-                    </div>
-                    <div class="col-2 overflow">
-                        <input type="text"
-                               onkeyup="applyFilter()"
-                               placeholder="adres"
-                               id="filter-address"
-                               class="filter-field">
+                        </div>
+                        <div class="col del-col overflow">
 
+                        </div>
                     </div>
-                    <div class="col del-col overflow">
+                </b>
 
-                    </div>
+                <div id="table">
+
                 </div>
-            </b>
-
-            <div id="table">
 
             </div>
-
         </div>
+
+
 
 
     </body>

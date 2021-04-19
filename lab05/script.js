@@ -143,7 +143,7 @@ function readAll(filterfields, searchWords) {
 
         if (cursor) {
             let row = document.createElement('div');
-            row.setAttribute('class', 'row w-100 m-0 client-row');
+            row.setAttribute('class', 'row m-0 client-row');
             row.id = cursor.key;
 
 
