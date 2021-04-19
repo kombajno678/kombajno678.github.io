@@ -143,7 +143,7 @@ function readAll(filterfields, searchWords) {
 
         if (cursor) {
             let row = document.createElement('div');
-            row.setAttribute('class', 'row w-100 m-0');
+            row.setAttribute('class', 'row w-100 m-0 client-row');
             row.id = cursor.key;
 
 
@@ -153,7 +153,7 @@ function readAll(filterfields, searchWords) {
                 <div class="col-2 overflow">${cursor.value.tel}</div>
                 <div class="col-2 overflow">${cursor.value.idnr}</div>
                 <div class="col-2 overflow">${cursor.value.address}</div>
-                <div class="col del-col overflow"><button type="cutton" onclick="remove('${cursor.value.id}')">usuń</button></div>`;
+                <div class="col del-col overflow"><button type="cutton" onclick="remove('${cursor.value.id}')">X</button></div>`;
             
             let addChild = false;
             if(filterfields){
