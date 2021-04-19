@@ -25,3 +25,8 @@ input.colored-input:invalid {
 .del-col{
     max-width:80px !important;
 }
+
+
+.google-field{
+    width:400px;
+}

@@ -42,7 +42,7 @@ request.onerror = (event) => {
 request.onsuccess = (event) => {
     db = request.result;
     console.log("request success: ", event);
-    readAll();
+    readAll(null, null);
 
 };
 clientData = [{
@@ -118,7 +118,7 @@ function addClient() {
         document.getElementById(formIds.idnr).value = '';
 
 
-        readAll();
+        readAll(null, null);
     };
 
     request.onerror = (event) => {
@@ -128,7 +128,7 @@ function addClient() {
 }
 
 
-function readAll(filterfields) {
+function readAll(filterfields, searchWords) {
     if (!db) {
         return;
     }
@@ -149,12 +149,13 @@ function readAll(filterfields) {
 
             row.innerHTML = `
                 <div class="col-2 overflow">${cursor.value.name}</div>
-                <div class="col overflow">${cursor.value.email}</div>
+                <div class="col overflow">${  cursor.value.email}</div>
                 <div class="col-2 overflow">${cursor.value.tel}</div>
                 <div class="col-2 overflow">${cursor.value.idnr}</div>
                 <div class="col-2 overflow">${cursor.value.address}</div>
                 <div class="col del-col overflow"><button type="cutton" onclick="remove('${cursor.value.id}')">usuń</button></div>`;
             
+            let addChild = false;
             if(filterfields){
                 let filterCheck = true;
                 let skipCheck = true;
@@ -172,10 +173,35 @@ function readAll(filterfields) {
                 })
 
                 if(filterCheck || skipCheck){
-                    table.appendChild(row);
+                    addChild = true;
                 }
 
             }else{
+                addChild = true;
+            }
+
+
+            if(searchWords){
+                addChild = false;
+                console.log(searchWords);
+
+
+                searchWords.forEach(w=> {
+                    w = w.toLowerCase();
+                    if(
+                    cursor.value.name.toLowerCase().includes(w) || 
+                    cursor.value.email.toLowerCase().includes(w) || 
+                    cursor.value.tel.toLowerCase().includes(w) || 
+                    cursor.value.idnr.toLowerCase().includes(w) || 
+                    cursor.value.address.toLowerCase().includes(w)
+                    ){
+                        addChild = true;
+                    }
+                })
+            }
+
+
+            if(addChild){
                 table.appendChild(row);
             }
            
@@ -193,7 +219,7 @@ function remove(id) {
             .objectStore("client")
             .delete(id);
 
-        request.onsuccess = (event) => readAll();
+        request.onsuccess = (event) => readAll(null, null);
     }
 
 }
@@ -204,7 +230,17 @@ function applyFilter() {
         let field = document.getElementById(filterIds[k]);
         filterfields[k] = field.value
     });
-    readAll(filterfields);
+    readAll(filterfields, null);
+}
+
+
+function Search(){
+    let searchStr = document.getElementById('google-field').value.trim();
+    if(searchStr && searchStr.length >= 1){
+        let words = searchStr.split(' ');
+        readAll(null, words);
+
+    }
 }
 
 
