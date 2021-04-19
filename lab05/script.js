@@ -6,19 +6,32 @@ window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction ||
 window.IDBKeyRange = window.IDBKeyRange ||
     window.webkitIDBKeyRange || window.msIDBKeyRange
 
+
 if (!window.indexedDB) {
     window.alert("Your browser doesn't support a stable version of IndexedDB.")
 }
 
 function getClientHash(client) {
-    return SHA1(client.name + client.email + client.tel)
+    return SHA1(client.name + client.email + '.' + client.tel + client.address + client.idnr)
 }
 
 const formIds = {
     name: 'client-name',
     email: 'client-email',
-    tel: 'client-tel'
+    tel: 'client-tel',
+    address: 'client-address',
+    idnr: 'client-idnr'
 }
+
+const filterIds = {
+    name: 'filter-name',
+    email: 'filter-email',
+    tel: 'filter-tel',
+    address: 'filter-address',
+    idnr: 'filter-idnr'
+}
+
+
 var db;
 var request = window.indexedDB.open("clientDb", 1);
 
@@ -34,15 +47,19 @@ request.onsuccess = (event) => {
 };
 clientData = [{
         id: 'a',
-        name: "test client1",
-        email: "test1@mail.com",
-        tel: "123456789"
+        name: 'client-name',
+        email: 'client-email',
+        tel: 'client-tel',
+        address: 'client-address',
+        idnr: 'client-idnr'
     },
     {
         id: 'b',
-        name: "test client2",
-        email: "test2@mail.com",
-        tel: "234567890"
+        name: 'client-name',
+        email: 'client-email',
+        tel: 'client-tel',
+        address: 'client-address',
+        idnr: 'client-idnr'
     }
 ]
 request.onupgradeneeded = (event) => {
@@ -70,7 +87,10 @@ function addClient() {
 
     if (!document.getElementById(formIds.name).checkValidity() ||
         !document.getElementById(formIds.email).checkValidity() ||
-        !document.getElementById(formIds.tel).checkValidity()) {
+        !document.getElementById(formIds.tel).checkValidity() ||
+        !document.getElementById(formIds.address).checkValidity() ||
+        !document.getElementById(formIds.idnr).checkValidity()
+    ) {
         alert("invalid form");
         return;
     }
@@ -79,6 +99,8 @@ function addClient() {
         name: document.getElementById(formIds.name).value,
         email: document.getElementById(formIds.email).value,
         tel: document.getElementById(formIds.tel).value,
+        address: document.getElementById(formIds.address).value,
+        idnr: document.getElementById(formIds.idnr).value
     }
     client.id = getClientHash(client);
 
@@ -88,6 +110,14 @@ function addClient() {
 
     request.onsuccess = (event) => {
         console.log('added new client', event);
+
+        document.getElementById(formIds.name).value = '';
+        document.getElementById(formIds.email).value = '';
+        document.getElementById(formIds.tel).value = '';
+        document.getElementById(formIds.address).value = '';
+        document.getElementById(formIds.idnr).value = '';
+
+
         readAll();
     };
 
@@ -98,10 +128,11 @@ function addClient() {
 }
 
 
-function readAll() {
-    if(!db){
+function readAll(filterfields) {
+    if (!db) {
         return;
     }
+    console.log(filterfields);
     var objectStore = db.transaction("client").objectStore("client");
 
     let table = document.getElementById('table');
@@ -115,12 +146,39 @@ function readAll() {
             row.setAttribute('class', 'row w-100 m-0');
             row.id = cursor.key;
 
+
             row.innerHTML = `
-                <div class="col">${cursor.value.name}</div>
-                <div class="col">${cursor.value.email}</div>
-                <div class="col">${cursor.value.tel}</div>
-                <div class="col"><button type="cutton" onclick="remove('${cursor.value.id}')">delete</button></div>`;
-            table.appendChild(row);
+                <div class="col-2 overflow">${cursor.value.name}</div>
+                <div class="col overflow">${cursor.value.email}</div>
+                <div class="col-2 overflow">${cursor.value.tel}</div>
+                <div class="col-2 overflow">${cursor.value.idnr}</div>
+                <div class="col-2 overflow">${cursor.value.address}</div>
+                <div class="col del-col overflow"><button type="cutton" onclick="remove('${cursor.value.id}')">usuń</button></div>`;
+            
+            if(filterfields){
+                let filterCheck = true;
+                let skipCheck = true;
+
+                Object.keys(filterfields).forEach(k => {
+                    if(filterfields[k] && filterfields[k].trim().length >= 1){
+                        skipCheck = false;
+                        
+                        if(cursor.value[k].includes(filterfields[k].trim())){
+                            filterCheck = filterCheck && true;
+                        }else{
+                            filterCheck = false;
+                        }
+                    }
+                })
+
+                if(filterCheck || skipCheck){
+                    table.appendChild(row);
+                }
+
+            }else{
+                table.appendChild(row);
+            }
+           
 
             cursor.continue();
         } else {}
@@ -139,6 +197,16 @@ function remove(id) {
     }
 
 }
+
+function applyFilter() {
+    let filterfields = {};
+    Object.keys(filterIds).forEach(k => {
+        let field = document.getElementById(filterIds[k]);
+        filterfields[k] = field.value
+    });
+    readAll(filterfields);
+}
+
 
 
 window.onload = () => {

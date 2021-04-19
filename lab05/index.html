@@ -24,23 +24,26 @@
 <body>
 
     <body>
-       
+
         <ul>
             <li>
-                imie nazwisko<br />
+                Imie nazwisko<br />
 
                 <input type="text"
                        required
+                       class="colored-input"
                        name="client-name"
                        id="client-name"
+                       pattern="[A-Za-z-]{1,} [A-Za-z-]{1,}"
                        placeholder="imie nazwisko">
 
             </li>
             <li>
-                adres email<br />
+                Adres email<br />
 
                 <input type="email"
                        required
+                       class="colored-input"
                        name="client-email"
                        id="client-email"
                        placeholder="imie.nazwisko@mail.pl">
@@ -51,15 +54,43 @@
 
                 <input type="tel"
                        required
+                       class="colored-input"
                        name="client-tel"
                        id="client-tel"
                        pattern="^([+]?[0-9]{2}[ ]?)?[0-9]{3}[-]?[0-9]{3}[-]?[0-9]{3}"
                        placeholder="+48 123-456-789">
 
             </li>
+
+
+            <li>
+                Nr dowodu<br />
+
+                <input type="text"
+                       required
+                       class="colored-input"
+                       name="client-idnr"
+                       id="client-idnr"
+                       pattern="[A-Za-z]{3}[0-9]{6}"
+                       placeholder="abc123456">
+
+            </li>
+
+
+            <li>
+                Adres<br />
+
+                <input type="text"
+                       required
+                       class="colored-input"
+                       name="client-address"
+                       id="client-address"
+                       placeholder="ulica nr miasto">
+
+            </li>
+
             <button type="button"
-                    onclick="addClient()"
-                    >
+                    onclick="addClient()">
                 Dodaj klienta do bazy
             </button>
         </ul>
@@ -69,15 +100,32 @@
         <div class="table w-100 m-0">
             <b>
                 <div class="row w-100 m-0 header-row">
-                    <div class="col">name</div>
-                    <div class="col">email</div>
-                    <div class="col">tel</div>
-                    <div class="col"></div>
+                    <div class="col-2 overflow">
+                        <input type="text" onkeyup="applyFilter()" placeholder="imie nazwisko" id="filter-name">
+                    </div>
+                    <div class="col overflow">
+                        <input type="text" onkeyup="applyFilter()" placeholder="email" id="filter-email">
+
+                    </div>
+                    <div class="col-2 overflow">
+                        <input type="text" onkeyup="applyFilter()" placeholder="tel" id="filter-tel">
+
+                    </div>
+                    <div class="col-2 overflow">
+                        <input type="text" onkeyup="applyFilter()" placeholder="nr dowodu" id="filter-idnr">
+                    </div>
+                    <div class="col-2 overflow">
+                        <input type="text" onkeyup="applyFilter()" placeholder="adres" id="filter-address">
+
+                    </div>
+                    <div class="col del-col overflow">
+                        
+                    </div>
                 </div>
             </b>
 
             <div id="table">
-                
+
             </div>
 
         </div>
