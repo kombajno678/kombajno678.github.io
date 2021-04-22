@@ -154,62 +154,55 @@ function readAll(filterfields, searchWords) {
                 <div class="col-2 overflow">${cursor.value.idnr}</div>
                 <div class="col-2 overflow">${cursor.value.address}</div>
                 <div class="col del-col overflow"><button type="cutton" onclick="remove('${cursor.value.id}')">X</button></div>`;
-            
+
             let addChild = false;
-            if(filterfields){
+            if (filterfields) {
                 let filterCheck = true;
                 let skipCheck = true;
 
                 Object.keys(filterfields).forEach(k => {
-                    if(filterfields[k] && filterfields[k].trim().length >= 1){
+                    if (filterfields[k] && filterfields[k].trim().length >= 1) {
                         skipCheck = false;
-                        
-                        if(cursor.value[k].includes(filterfields[k].trim())){
+
+                        if (cursor.value[k].includes(filterfields[k].trim())) {
                             filterCheck = filterCheck && true;
-                        }else{
+                        } else {
                             filterCheck = false;
                         }
                     }
                 })
 
-                if(filterCheck || skipCheck){
+                if (filterCheck || skipCheck) {
                     addChild = true;
                 }
 
-            }else{
+            } else {
                 addChild = true;
             }
 
 
-            if(searchWords){
+            if (searchWords) {
                 addChild = false;
-                console.log(searchWords);
-
-
-                if(searchWords.filter(w=> {
-                    w = w.toLowerCase();
-                    if(
-                    cursor.value.name.toLowerCase().includes(w) || 
-                    cursor.value.email.toLowerCase().includes(w) || 
-                    cursor.value.tel.toLowerCase().includes(w) || 
-                    cursor.value.idnr.toLowerCase().includes(w) || 
-                    cursor.value.address.toLowerCase().includes(w)
-                    ){
-                        return true;
-                    }
-                    return false
-                }).length == searchWords.length){
+                if (searchWords.filter(w => {
+                        w = w.toLowerCase();
+                        if (
+                            cursor.value.name.toLowerCase().includes(w) ||
+                            cursor.value.email.toLowerCase().includes(w) ||
+                            cursor.value.tel.toLowerCase().includes(w) ||
+                            cursor.value.idnr.toLowerCase().includes(w) ||
+                            cursor.value.address.toLowerCase().includes(w)
+                        ) {
+                            return true;
+                        }
+                        return false
+                    }).length == searchWords.length) {
                     addChild = true;
                 }
-
-
             }
-
-
-            if(addChild){
+            if (addChild) {
                 table.appendChild(row);
             }
-           
+
 
             cursor.continue();
         } else {}
@@ -239,9 +232,9 @@ function applyFilter() {
 }
 
 
-function Search(){
+function Search() {
     let searchStr = document.getElementById('google-field').value.trim();
-    if(searchStr && searchStr.length >= 1){
+    if (searchStr && searchStr.length >= 1) {
         let words = searchStr.split(' ');
         readAll(null, words);
 
