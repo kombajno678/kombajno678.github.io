@@ -88,16 +88,24 @@
             <div class="col-auto">
 
 
-                <button class="btn btn-success"
-                        disabled
+                <button class="btn btn-success hidden"
+                id="button-save"
+                        
                         onclick="saveClient()">
                     Zapisz zmiany
+                </button>
+                <button class="btn btn-danger hidden"
+                id="button-cancel"
+                        
+                        onclick="cancelEditing()">
+                    Anuluj
                 </button>
             </div>
             <div class="col-auto">
 
 
                 <button class="btn btn-info"
+                id="button-add"
                         onclick="addClient()">
                     Dodaj klienta do bazy
                 </button>
@@ -219,7 +227,10 @@
                                    class="filter-field">
 
                         </div>
-                        <div class="col del-col overflow">
+                        <div class="col action-col overflow">
+
+                        </div>
+                        <div class="col action-col overflow">
 
                         </div>
                     </div>

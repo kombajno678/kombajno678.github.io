@@ -11,6 +11,11 @@ if (!window.indexedDB) {
     window.alert("Your browser doesn't support a stable version of IndexedDB.")
 }
 
+
+var editing = false
+var editingId = null
+
+
 function getClientHash(client) {
     return SHA1(client.name + client.email + '.' + client.tel + client.address + client.idnr)
 }
@@ -63,7 +68,7 @@ clientData = [{
     }
 ]
 request.onupgradeneeded = (event) => {
-    var db = event.target.result;
+    db = event.target.result;
     var objectStore = db.createObjectStore("client", {
         keyPath: "id"
     });
@@ -84,7 +89,7 @@ request.onupgradeneeded = (event) => {
 
 
 function addClient() {
-
+    if (editing) return;
     if (!document.getElementById(formIds.name).checkValidity() ||
         !document.getElementById(formIds.email).checkValidity() ||
         !document.getElementById(formIds.tel).checkValidity() ||
@@ -128,12 +133,54 @@ function addClient() {
 }
 
 
+function saveClient() {
+    if (!editing) return;
+    
+
+
+    if (!document.getElementById(formIds.name).checkValidity() ||
+        !document.getElementById(formIds.email).checkValidity() ||
+        !document.getElementById(formIds.tel).checkValidity() ||
+        !document.getElementById(formIds.address).checkValidity() ||
+        !document.getElementById(formIds.idnr).checkValidity()
+    ) {
+        alert("invalid form");
+        return;
+    }
+    let client = {
+        id: null,
+        name: document.getElementById(formIds.name).value,
+        email: document.getElementById(formIds.email).value,
+        tel: document.getElementById(formIds.tel).value,
+        address: document.getElementById(formIds.address).value,
+        idnr: document.getElementById(formIds.idnr).value
+    }
+    client.id = editingId;
+
+    console.log(client);
+
+    let request = db.transaction(["client"], "readwrite")
+        .objectStore("client")
+        .put(client);
+    request.onsuccess = (event) => {
+        console.log('edited client', event);
+        clearForm();
+        readAll(null, null);
+        switchToAddMode();
+    };
+
+
+
+
+}
+
+
 function readAll(filterfields, searchWords) {
     if (!db) {
         return;
     }
-    console.log(filterfields);
-    var objectStore = db.transaction("client").objectStore("client");
+    //console.log(filterfields);
+    let objectStore = db.transaction("client").objectStore("client");
 
     let table = document.getElementById('table');
     table.innerHTML = '';
@@ -149,11 +196,12 @@ function readAll(filterfields, searchWords) {
 
             row.innerHTML = `
                 <div class="col-2 overflow">${cursor.value.name}</div>
-                <div class="col overflow">${  cursor.value.email}</div>
+                <div class="col overflow">${cursor.value.email}</div>
                 <div class="col-2 overflow">${cursor.value.tel}</div>
                 <div class="col-2 overflow">${cursor.value.idnr}</div>
                 <div class="col-2 overflow">${cursor.value.address}</div>
-                <div class="col del-col overflow"><button type="cutton" onclick="remove('${cursor.value.id}')">X</button></div>`;
+                <div class="col action-col del-col overflow"><button type="cutton" onclick="remove('${cursor.value.id}')">X</button></div>
+                <div class="col action-col edit-col overflow"><button type="cutton" onclick="edit('${cursor.value.id}')">edit</button></div>`;
 
             let addChild = false;
             if (filterfields) {
@@ -210,6 +258,7 @@ function readAll(filterfields, searchWords) {
 }
 
 function remove(id) {
+    if (editing) return;
     console.log("deletijng id ", id);
 
     if (confirm('are you sure?')) {
@@ -220,6 +269,18 @@ function remove(id) {
         request.onsuccess = (event) => readAll(null, null);
     }
 
+}
+
+function edit(id) {
+    console.log("editing id ", id);
+    let request = db.transaction(["client"], "readwrite")
+        .objectStore("client")
+        .get(id);
+    request.onsuccess = (event) => {
+        switchToEditMode(id)
+        let client = JSON.parse(JSON.stringify(event.target.result));
+        fillFormWithClientData(client);
+    };
 }
 
 function applyFilter() {
@@ -249,21 +310,63 @@ window.onload = () => {
 }
 
 
+function clearForm() {
+    document.getElementById(formIds.name).value = '';
+    document.getElementById(formIds.email).value = '';
+    document.getElementById(formIds.tel).value = '';
+    document.getElementById(formIds.address).value = '';
+    document.getElementById(formIds.idnr).value = '';
+}
 
 
 
+function cancelEditing() {
+    clearForm();
+    switchToAddMode();
+}
 
-function fillFormWithRandomData(){
-    let randomClient = getRandomClient();
+function switchToEditMode(id) {
+    editing = true;
+    editingId = id;
+    console.log("switchToEditMode editingId = ", editingId);
 
-    document.getElementById(formIds.name).value = randomClient.name;
-    document.getElementById(formIds.email).value = randomClient.email;
-    document.getElementById(formIds.tel).value = randomClient.tel;
-    document.getElementById(formIds.address).value = randomClient.address;
-    document.getElementById(formIds.idnr).value = randomClient.idnr;
+    document.getElementById('button-add').setAttribute('class', 'btn btn-info hidden');
+    document.getElementById('button-save').setAttribute('class', 'btn btn-success ');
+    document.getElementById('button-cancel').setAttribute('class', 'btn btn-danger ');
+}
 
+function switchToAddMode() {
+    editing = false;
+    editingId = null;
+    document.getElementById('button-add').setAttribute('class', 'btn btn-info ');
+    document.getElementById('button-save').setAttribute('class', 'btn btn-success hidden');
+    document.getElementById('button-cancel').setAttribute('class', 'btn btn-danger hidden');
 
 }
+
+function fillFormWithClientData(client) {
+    if (
+        'name' in client &&
+        'email' in client &&
+        'tel' in client &&
+        'address' in client &&
+        'idnr' in client
+    ) {
+        document.getElementById(formIds.name).value = client.name;
+        document.getElementById(formIds.email).value = client.email;
+        document.getElementById(formIds.tel).value = client.tel;
+        document.getElementById(formIds.address).value = client.address;
+        document.getElementById(formIds.idnr).value = client.idnr;
+    } else {
+        console.error('incorrect client', client)
+    }
+
+}
+
+function fillFormWithRandomData() {
+    fillFormWithClientData(getRandomClient());
+}
+
 function getRandomClient() {
     let client = {
         id: null,
