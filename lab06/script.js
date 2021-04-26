@@ -272,6 +272,7 @@ function remove(id) {
 }
 
 function edit(id) {
+    if (editing) return;
     console.log("editing id ", id);
     let request = db.transaction(["client"], "readwrite")
         .objectStore("client")
@@ -330,6 +331,8 @@ function switchToEditMode(id) {
     editingId = id;
     console.log("switchToEditMode editingId = ", editingId);
 
+    document.getElementById(id).setAttribute('class', 'row m-0 client-row highlighted')
+
     document.getElementById('button-add').setAttribute('class', 'btn btn-info hidden');
     document.getElementById('button-save').setAttribute('class', 'btn btn-success ');
     document.getElementById('button-cancel').setAttribute('class', 'btn btn-danger ');
@@ -337,6 +340,7 @@ function switchToEditMode(id) {
 
 function switchToAddMode() {
     editing = false;
+    document.getElementById(editingId)?.setAttribute('class', 'row m-0 client-row')
     editingId = null;
     document.getElementById('button-add').setAttribute('class', 'btn btn-info ');
     document.getElementById('button-save').setAttribute('class', 'btn btn-success hidden');
