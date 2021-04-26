@@ -33,7 +33,7 @@ const filterIds = {
 
 
 var db;
-var request = window.indexedDB.open("clientDb", 1);
+var request = window.indexedDB.open("clientDb");
 
 request.onerror = (event) => {
     console.error('db error: ', event);
@@ -229,6 +229,7 @@ function applyFilter() {
         filterfields[k] = field.value
     });
     readAll(filterfields, null);
+    client.id = getClientHash(client);
 }
 
 
@@ -246,6 +247,275 @@ function Search() {
 window.onload = () => {
     //readAll();
 }
+
+
+
+
+
+
+function fillFormWithRandomData(){
+    let randomClient = getRandomClient();
+
+    document.getElementById(formIds.name).value = randomClient.name;
+    document.getElementById(formIds.email).value = randomClient.email;
+    document.getElementById(formIds.tel).value = randomClient.tel;
+    document.getElementById(formIds.address).value = randomClient.address;
+    document.getElementById(formIds.idnr).value = randomClient.idnr;
+
+
+}
+function getRandomClient() {
+    let client = {
+        id: null,
+        name: names[Math.floor(Math.random() * names.length)],
+        email: emails[Math.floor(Math.random() * emails.length)],
+        tel: phones[Math.floor(Math.random() * phones.length)],
+        address: addresses[Math.floor(Math.random() * addresses.length)],
+        idnr: randomIdNumber()
+    }
+
+    client.id = getClientHash(client);
+    return client;
+
+}
+
+
+const addresses = [
+    `18105 Dark Star Way
+Boyds, Maryland(MD)
+`,
+    `823 Madison
+Huntsville, Arkansas(AR)
+`,
+    `217 E Crocker St
+Bradner, Ohio(OH)
+`,
+    `267 Orchard Rd
+Nashville, Arkansas(AR)
+`,
+    `440 Cherry Hill Rd
+Nazareth, Pennsylvania(PA)
+`
+]
+
+function randomIdNumber() {
+    let result = [];
+    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let digits = '0123456789';
+    for (let i = 0; i < 3; i++) {
+        result.push(characters.charAt(Math.floor(Math.random() * characters.length)));
+    }
+    for (let i = 0; i < 6; i++) {
+        result.push(digits.charAt(Math.floor(Math.random() * digits.length)));
+    }
+    return result.join('');
+
+}
+/*
+130 Ludlam Pl
+Greenport, New York(NY)
+
+278 Beech St
+Oxford, Wisconsin(WI)
+
+505 Diggs Blvd
+Warner Robins, Georgia(GA)
+
+86 Tumbleweed Ct
+San Ramon, California(CA)
+
+2615 Lone Oak Way
+Eugene, Oregon(OR)
+
+452 Hereford Rd
+Monroe, Louisiana(LA)
+
+407 Us 59 Hwy S
+Linden, Texas(TX)
+
+802 E Mesa Dr
+Rialto, California(CA)
+
+56566 Nassau Oaks Dr
+Callahan, Florida(FL)
+
+1231 S Larriviere Rd
+Youngsville, Louisiana(LA)
+
+487 Whittemore Rd
+Middlebury, Connecticut(CT)
+
+1361 Thomasville Cir
+Lakeland, Florida(FL)
+
+435 Johnson St #407024
+Shaw A F B, South Carolina(SC)
+
+122 E Northampton St
+Bath, Pennsylvania(PA)
+
+7202 Still Haven Dr
+Richmond, Texas(TX)
+
+13 Woodstone Dr
+Mandeville, Louisiana(LA)
+
+5554 Castlebar Pl
+Rancho Cucamonga, California(CA)
+
+7025 Raymond Rd
+Madison, Wisconsin(WI)
+
+24853 SW 128th Ave
+Homestead, Florida(FL)
+
+24 Caldon Path
+Newton Center, Massachusetts(MA)
+
+111 Roy Clark Rd
+Anacoco, Louisiana(LA)
+
+666 Carterville Heights Rd
+Wytheville, Virginia(VA)
+*/
+const phones = [
+    '202-555-012',
+    '202-555-017',
+    '202-555-014',
+    '202-555-019',
+    '202-555-014',
+    '202-555-016',
+    '020916237',
+    '020913199',
+    '020913862',
+    '020913046',
+    '020910030',
+    '020913296',
+    '202-555-014',
+    '202-555-016',
+    '202-555-018',
+    '202-555-017',
+    '202-555-011',
+    '202-555-010',
+    '020973199',
+    '020973862',
+    '020973046',
+    '020970030',
+    '020973296',
+    '272-555-014',
+    '272-555-016',
+    '272-555-018',
+    '272-555-017',
+    '272-555-011',
+    '272-555-010'
+]
+
+
+const emails = [
+    "goldberg@verizon.net",
+    "wayward@yahoo.ca",
+    "xtang@outlook.com",
+    "richard@sbcglobal.net",
+    "lahvak@me.com",
+    "koudas@optonline.net",
+    "pdbaby@yahoo.ca",
+    "jorgb@att.net",
+    "lbecchi@att.net",
+    "sabren@icloud.com",
+    "thaljef@live.com",
+    "pierce@sbcglobal.net",
+    "frode@icloud.com",
+    "cgarcia@sbcglobal.net",
+    "budinger@comcast.net",
+    "pontipak@me.com",
+    "howler@gmail.com",
+    "valdez@live.com",
+    "adillon@att.net",
+    "delpino@icloud.com",
+    "bruck@outlook.com",
+    "imightb@optonline.net",
+    "rddesign@icloud.com",
+    "mddallara@mac.com",
+    "warrior@icloud.com",
+    "goldberg@optonline.net",
+    "pierce@icloud.com",
+    "symbolic@outlook.com",
+    "formis@hotmail.com",
+    "dburrows@optonline.net",
+    "sacraver@outlook.com",
+    "milton@gmail.com",
+    "fraterk@mac.com",
+    "citizenl@me.com",
+    "amimojo@mac.com",
+    "dartlife@optonline.net",
+    "zyghom@optonline.net",
+    "meinkej@mac.com",
+    "gilmoure@yahoo.com",
+    "marin@outlook.com",
+    "rafasgj@verizon.net",
+    "miyop@mac.com",
+    "sopwith@yahoo.ca",
+    "kempsonc@msn.com",
+    "denism@verizon.net",
+    "tfinniga@hotmail.com",
+    "credmond@yahoo.ca",
+    "jigsaw@hotmail.com",
+    "druschel@msn.com",
+    "cmdrgravy@att.net"
+]
+
+const names = [
+    "Rosann Roose",
+    "Donte Dyke",
+    "Erma Everts",
+    "Racheal Ricca",
+    "Micaela Mulder",
+    "Benedict Bolyard",
+    "Tomika Tilghman",
+    "Librada Leaks",
+    "Jillian Jump",
+    "Pete Pilson",
+    "German Gravel",
+    "Sherryl Soja",
+    "Lashawna Leach",
+    "Sandie Schwer",
+    "Fay Feucht",
+    "Diana Dery",
+    "Sharron Smithey",
+    "Carmel Creegan",
+    "Marilou Mcnerney",
+    "Maryalice Milera",
+    "Mina Mccubbin",
+    "Denny Dahle",
+    "Claudette Caywood",
+    "Marci Myers",
+    "Rigoberto Rost",
+    "Rosalind Rickenbacker",
+    "Elizbeth Easler",
+    "Harrison Harvin",
+    "Regan Rimer",
+    "Hanna Howell",
+    "Shannon Styers",
+    "Aubrey Abeita",
+    "Carin Clogston",
+    "Julie Jone",
+    "Rubin Reay",
+    "Catherin Cerniglia",
+    "Sharika Shepherd",
+    "Denisha Donoghue",
+    "Jenine Johnston",
+    "Keila Kimura",
+    "Margy Macgregor",
+    "Eugenia Eichhorn",
+    "Kattie Kinsey",
+    "Leonora Low",
+    "Bobby Burkhardt",
+    "Sharri Schott",
+    "Jessika Jeon",
+    "Bibi Brazzell",
+    "Harvey Hecker",
+    "Yuko Yingst"
+]
 
 
 
@@ -391,7 +661,7 @@ function SHA1(msg) {
 
 
         for (i = 0; i < 16; i++) W[i] = word_array[blockstart + i];
-        for (i = 16; i <= 79; i++) W[i] = rotate_left(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1);
+        for (i = 16; i <= 79; i++) W[i] = rotate_left(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16]);
 
 
         A = H0;
@@ -402,40 +672,40 @@ function SHA1(msg) {
 
 
         for (i = 0; i <= 19; i++) {
-            temp = (rotate_left(A, 5) + ((B & C) | (~B & D)) + E + W[i] + 0x5A827999) & 0x0ffffffff;
+            temp = (rotate_left(A) + ((B & C) | (~B & D)) + E + W[i] + 0x5A827999) & 0x0ffffffff;
             E = D;
             D = C;
-            C = rotate_left(B, 30);
+            C = rotate_left(B);
             B = A;
             A = temp;
         }
 
 
         for (i = 20; i <= 39; i++) {
-            temp = (rotate_left(A, 5) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1) & 0x0ffffffff;
+            temp = (rotate_left(A) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1) & 0x0ffffffff;
             E = D;
             D = C;
-            C = rotate_left(B, 30);
+            C = rotate_left(B);
             B = A;
             A = temp;
         }
 
 
         for (i = 40; i <= 59; i++) {
-            temp = (rotate_left(A, 5) + ((B & C) | (B & D) | (C & D)) + E + W[i] + 0x8F1BBCDC) & 0x0ffffffff;
+            temp = (rotate_left(A) + ((B & C) | (B & D) | (C & D)) + E + W[i] + 0x8F1BBCDC) & 0x0ffffffff;
             E = D;
             D = C;
-            C = rotate_left(B, 30);
+            C = rotate_left(B);
             B = A;
             A = temp;
         }
 
 
         for (i = 60; i <= 79; i++) {
-            temp = (rotate_left(A, 5) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6) & 0x0ffffffff;
+            temp = (rotate_left(A) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6) & 0x0ffffffff;
             E = D;
             D = C;
-            C = rotate_left(B, 30);
+            C = rotate_left(B);
             B = A;
             A = temp;
         }
