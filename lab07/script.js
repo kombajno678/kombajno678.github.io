@@ -377,17 +377,16 @@ function getRandomClient() {
 
 function loadJSONToForm() {
     jsonInputField = document.getElementById('textarea-json-form');
-    clientFromJson = JSON.parse(jsonInputField.value);
-
-    jsonInputField.value = JSON.stringify(clientFromJson, null, 4);
+    jsonInputField.value = JSON.stringify(JSON.parse(jsonInputField.value), null, 4);
 
     let myWorker = new Worker('worker.js');
 
-    myWorker.postMessage(clientFromJson);
+    myWorker.postMessage(jsonInputField.value);
+    console.log("Main script > Posting message to webworker: ", jsonInputField.value);
 
     myWorker.onmessage = function (e) {
-        let result = e.data;
-        console.log('Message received from worker', result);
+        console.log('Main script > Message received from worker: ', e.data);
+        let result = JSON.parse(e.data);
         fillFormWithClientData(result);
     }
 

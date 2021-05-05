@@ -8,19 +8,18 @@ function swapCase(letters) {
             newLetters += letters[i].toLowerCase();
         }
     }
-    console.log(newLetters);
     return newLetters;
 }
 
 onmessage = function (e) {
-    console.log('Message received from main script', e);
-
-
-    Object.keys(e.data).forEach(k => {
-        e.data[k] = swapCase(e.data[k]);
+    console.log('Worker > Message received from main script', e);
+    let parsedObject = JSON.parse(e.data);
+    Object.keys(parsedObject).forEach(k => {
+        parsedObject[k] = swapCase(parsedObject[k]);
     })
-    console.log('Posting message back to main script', e.data);
-    postMessage(e.data);
+    let ret = JSON.stringify(parsedObject);
+    console.log('Worker > Posting message back to main script', ret);
+    postMessage(ret);
 }
 
 
