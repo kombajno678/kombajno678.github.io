@@ -392,7 +392,7 @@ function loadJSONToForm() {
             myWorker.terminate();
         }
     } else {
-        alert("no webworker support :(");
+        alert("this webbrowser offers no webworker support :(");
     }
 
 
