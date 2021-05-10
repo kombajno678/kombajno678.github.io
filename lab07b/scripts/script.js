@@ -388,33 +388,46 @@ function getRandomClient() {
 
 }
 
-function loadFormToJSON(){
+function loadFormToJSON() {
     jsonInputField = document.getElementById('textarea-json-form');
     let client = {}
     Object.keys(formIds).forEach(k => {
         client[k] = document.getElementById(formIds[k]).value;
     });
-    
+
     jsonInputField.value = JSON.stringify(client, null, 4);
 
 
 }
+
 function loadJSONToForm() {
     jsonInputField = document.getElementById('textarea-json-form');
     jsonInputField.value = JSON.stringify(JSON.parse(jsonInputField.value), null, 4);
 
     if (typeof (Worker) !== "undefined") {
-        let myWorker = new Worker('scripts/workers/swap-case-worker.js');
+        try {
+            let myWorker = new Worker('scripts/workers/swap-case-worker.js');
 
-        myWorker.postMessage(jsonInputField.value);
-        console.log("Main script > Posting message to swap-case-worker: ", jsonInputField.value);
+            myWorker.postMessage(jsonInputField.value);
+            console.log("Main script > Posting message to swap-case-worker: ", jsonInputField.value);
 
-        myWorker.onmessage = function (e) {
-            console.log('Main script > Message received from swap-case-worker: ', e.data);
-            let result = JSON.parse(e.data);
-            fillFormWithClientData(result);
-            myWorker.terminate();
+            myWorker.onmessage = function (e) {
+                console.log('Main script > Message received from swap-case-worker: ', e.data);
+                let result = JSON.parse(e.data);
+                fillFormWithClientData(result);
+                myWorker.terminate();
+            }
+        } catch {
+            alert(`
+nie mozna uruchomic workera
+poprosze uruchomić przez 'npm start', a nie przez otwarcie pliku html,
+
+informacja dlaczego : https://stackoverflow.com/questions/21408510/chrome-cant-load-web-worker
+
+albo łatwiej otworzyć przez github pages: 
+https://kombajno678.github.io/lab07b/index.html`);
         }
+
     } else {
         alert("this webbrowser offers no webworker support :(");
     }
@@ -438,21 +451,34 @@ async function updateExamplecolor(client) {
 
 
     if (typeof (Worker) !== "undefined") {
-        let myWorker = new Worker('scripts/workers/calculate-color-worker.js');
+        try {
+            let myWorker = new Worker('scripts/workers/calculate-color-worker.js');
 
-        console.log("Main script > Posting message to calculate-color-worker");
-        myWorker.postMessage(client);
+            console.log("Main script > Posting message to calculate-color-worker");
+            myWorker.postMessage(client);
 
-        myWorker.onmessage = (e) => {
-            console.log('Main script > Message received from calculate-color-worker: ', e.data);
-            let color = e.data;
-            myWorker.terminate();
-            document.getElementById('color-example').innerHTML = JSON.stringify(color);
-            document.getElementById('color-example').style = 'background-color: ' + color.hex;
-            document.getElementById('color-example').style = 'color: ' + color.hex;
-            document.getElementById('client-color').value = JSON.stringify(color);
+            myWorker.onmessage = (e) => {
+                console.log('Main script > Message received from calculate-color-worker: ', e.data);
+                let color = e.data;
+                myWorker.terminate();
+                document.getElementById('color-example').innerHTML = JSON.stringify(color);
+                document.getElementById('color-example').style = 'background-color: ' + color.hex;
+                document.getElementById('color-example').style = 'color: ' + color.hex;
+                document.getElementById('client-color').value = JSON.stringify(color);
+            }
+        } catch {
+            alert(`
+nie mozna uruchomic workera
+poprosze uruchomić przez 'npm start', a nie przez otwarcie pliku html,
 
+informacja dlaczego : https://stackoverflow.com/questions/21408510/chrome-cant-load-web-worker
+
+albo łatwiej otworzyć przez github pages: 
+https://kombajno678.github.io/lab07b/index.html`);
         }
+
+
+
     } else {
         alert("this webbrowser offers no webworker support :(");
         return null;
