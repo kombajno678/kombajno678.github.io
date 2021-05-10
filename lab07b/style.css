@@ -7,19 +7,25 @@ input.colored-input:invalid {
     border: 5px solid red;
     background-color: rgba(255, 0, 0, 0.10);
 }
+.colored-input{
+    width:100%;
+}
 
 
 .header-row {
     background-color: rgb(0, 0, 0);
-    color:white
+    color: white
 }
-.container-fluid{
-    
+
+.container-fluid {
+
     overflow-x: scroll;
 }
-.table{
-    min-width:800px;
+
+.table {
+    min-width: 800px;
 }
+
 .border {
     box-shadow: inset 0 0 0 1px rgb(155, 155, 155);
 }
@@ -41,11 +47,11 @@ input.colored-input:invalid {
 .filter-field {
     width: 100%;
     background-color: rgba(27, 27, 27, 0.5);
-    color:white
+    color: white
 }
 
-.filter-field::placeholder{
-    color:rgb(129, 247, 255);
+.filter-field::placeholder {
+    color: rgb(129, 247, 255);
 }
 
 .action-col {
@@ -63,12 +69,15 @@ input.colored-input:invalid {
 .del-col>button:hover {
     background-color: rgba(255, 0, 0, 0.356) !important;
 }
+
 .del-col>button:active {
     background-color: rgba(255, 0, 0, 0.842) !important;
 }
+
 .edit-col>button:hover {
     background-color: rgba(206, 203, 28, 0.356) !important;
 }
+
 .edit-col>button:active {
     background-color: rgba(206, 203, 28, 0.842) !important;
 }
@@ -81,7 +90,8 @@ input.colored-input:invalid {
 .client-row:nth-child(2n-1) {
     background-color: rgba(201, 201, 201, 0.5);
 }
-.client-row.highlighted{
+
+.client-row.highlighted {
     background-color: rgba(0, 247, 12, 0.5) !important;
 }
 
@@ -121,7 +131,17 @@ input.colored-input:invalid {
     color: rgb(52, 168, 84)
 }
 
-.hidden{
+.hidden {
     display: none !important;
 }
 
+
+
+.display-photo-filter {
+
+    max-width: 200px;
+    margin:auto;
+    height: 200px;
+    background-repeat:no-repeat, no-repeat !important;
+
+}

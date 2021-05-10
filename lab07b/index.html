@@ -28,7 +28,6 @@
             <div class="col">
                 Imie nazwisko<br />
                 <input type="text"
-                       onchange="updateExamplecolor()"
                        onkeydown="updateExamplecolor()"
                        required
                        class="colored-input"
@@ -92,14 +91,13 @@
                        name="client-photourl"
                        id="client-photourl"
                        placeholder="http://...">
+                <input type="hidden"
+                       id="client-color">
 
             </div>
-            <div class="col">
-                <div id="color-example">example</div>
-
-            </div>
 
 
+            <div id="color-example"></div>
         </div>
 
         <div class="row w-100 m-0">
@@ -161,6 +159,11 @@
                         id="button-load"
                         onclick="loadJSONToForm()">
                     Wprowadź JSON do formularza
+                </button><br />
+                <button class="btn btn-secondary w-100"
+                        id="button-load"
+                        onclick="loadFormToJSON()">
+                    Wprowadź formularz do JSON
                 </button>
             </div>
             <div class="col"></div>

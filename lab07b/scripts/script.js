@@ -26,7 +26,8 @@ const formIds = {
     tel: 'client-tel',
     address: 'client-address',
     idnr: 'client-idnr',
-    photourl: 'client-photourl'
+    photourl: 'client-photourl',
+    color: 'client-color'
 }
 
 const filterIds = {
@@ -101,13 +102,7 @@ function addClient() {
         return;
     }
     let client = {
-        id: null,
-        // name: document.getElementById(formIds.name).value,
-        // email: document.getElementById(formIds.email).value,
-        // tel: document.getElementById(formIds.tel).value,
-        // address: document.getElementById(formIds.address).value,
-        // idnr: document.getElementById(formIds.idnr).value,
-        // photourl: document.getElementById(formIds.photourl).value
+        id: null
     }
     Object.keys(formIds).forEach(k => {
         client[k] = document.getElementById(formIds[k]).value;
@@ -139,18 +134,12 @@ function saveClient() {
 
 
 
-    if (formIds.map(f => !document.getElementById(f).checkValidity()).find(f => f)) {
+    if (Object.keys(formIds).map(k => !document.getElementById(formIds[k]).checkValidity()).find(f => f)) {
         alert("invalid form");
         return;
     }
     let client = {
-        id: null,
-        // name: document.getElementById(formIds.name).value,
-        // email: document.getElementById(formIds.email).value,
-        // tel: document.getElementById(formIds.tel).value,
-        // address: document.getElementById(formIds.address).value,
-        // idnr: document.getElementById(formIds.idnr).value,
-        // photourl: document.getElementById(formIds.photourl).value
+        id: null
     }
     Object.keys(formIds).forEach(k => {
         client[k] = document.getElementById(formIds[k]).value;
@@ -193,18 +182,42 @@ function readAll(filterfields, searchWords) {
             row.setAttribute('class', 'row m-0 client-row');
             row.id = cursor.key;
 
+            if (cursor.value.photourl && (cursor.value.photourl + '').length > 5) {
+                let color = JSON.parse(cursor.value.color);
 
-            row.innerHTML = `
-                <div class="col-2 overflow">${cursor.value.name || ''}</div>
-                <div class="col overflow">${cursor.value.email || ''}</div>
-                <div class="col-2 overflow">${cursor.value.tel || ''}</div>
-                <div class="col-2 overflow">${cursor.value.idnr || ''}</div>
-                <div class="col-2 overflow">${cursor.value.address || ''}</div>
-                <div class="col-2 overflow">${cursor.value.photourl || ''}</div>
-                <div class="col action-col del-col overflow"><button type="cutton" onclick="remove('${cursor.value.id}')">X</button></div>
-                <div class="col action-col edit-col overflow"><button type="cutton" onclick="edit('${cursor.value.id}')">edit</button></div>`;
+                row.innerHTML = `
+                            <div class="col overflow">${cursor.value.name || ''}</div>
+                            <div class="col overflow">${cursor.value.email || ''}</div>
+                            <div class="col overflow">${cursor.value.tel || ''}</div>
+                            <div class="col overflow">${cursor.value.idnr || ''}</div>
+                            <div class="col overflow">${cursor.value.address || ''}</div>
+                            
+                            <div class="col overflow">
+                                <div class="display-photo-filter"
+                                style="background:linear-gradient(0deg, rgba(${color.r}, ${color.g}, ${color.b}, 0.5), rgba(${color.r}, ${color.g}, ${color.b}, 0.5)), url(${cursor.value.photourl || ''});">
+                                </div>
+                            </div>
+                            <div class="col action-col del-col overflow"><button type="cutton" onclick="remove('${cursor.value.id}')">X</button></div>
+                            <div class="col action-col edit-col overflow"><button type="cutton" onclick="edit('${cursor.value.id}')">edit</button></div>`;
+
+            } else {
+                row.innerHTML = `
+                    <div class="col overflow">${cursor.value.name || ''}</div>
+                    <div class="col overflow">${cursor.value.email || ''}</div>
+                    <div class="col overflow">${cursor.value.tel || ''}</div>
+                    <div class="col overflow">${cursor.value.idnr || ''}</div>
+                    <div class="col overflow">${cursor.value.address || ''}</div>
+                    <div class="col overflow"></div>
+                    <div class="col action-col del-col overflow"><button type="cutton" onclick="remove('${cursor.value.id}')">X</button></div>
+                    <div class="col action-col edit-col overflow"><button type="cutton" onclick="edit('${cursor.value.id}')">edit</button></div>`;
+            }
+
+
+
+
 
             let addChild = false;
+
             if (filterfields) {
                 let filterCheck = true;
                 let skipCheck = true;
@@ -348,27 +361,26 @@ function switchToAddMode() {
 
 function fillFormWithClientData(client) {
 
-
-    fields = ['name', 'email', 'tel', 'address', 'idnr', 'photourl'];
     Object.keys(formIds).forEach(k => {
         if (k in client) document.getElementById(formIds[k]).value = client[k];
     })
 }
 
 function fillFormWithRandomData() {
-    fillFormWithClientData(getRandomClient());
-    updateExamplecolor();
+    let c = getRandomClient()
+    fillFormWithClientData(c);
+    updateExamplecolor(c);
 }
 
 function getRandomClient() {
     let client = {
         id: null,
         name: names[Math.floor(Math.random() * names.length)],
-        email: emails[Math.floor(Math.random() * emails.length)],
+        email: randomChar() + randomChar() + randomChar() + emails[Math.floor(Math.random() * emails.length)],
         tel: phones[Math.floor(Math.random() * phones.length)],
         address: addresses[Math.floor(Math.random() * addresses.length)],
         idnr: randomIdNumber(),
-        photourl: '???'
+        photourl: 'https://picsum.photos/200'
     }
 
     client.id = getClientHash(client);
@@ -376,13 +388,23 @@ function getRandomClient() {
 
 }
 
+function loadFormToJSON(){
+    jsonInputField = document.getElementById('textarea-json-form');
+    let client = {}
+    Object.keys(formIds).forEach(k => {
+        client[k] = document.getElementById(formIds[k]).value;
+    });
+    
+    jsonInputField.value = JSON.stringify(client, null, 4);
 
+
+}
 function loadJSONToForm() {
     jsonInputField = document.getElementById('textarea-json-form');
     jsonInputField.value = JSON.stringify(JSON.parse(jsonInputField.value), null, 4);
 
     if (typeof (Worker) !== "undefined") {
-        let myWorker = new Worker('workers/swap-case-worker.js');
+        let myWorker = new Worker('scripts/workers/swap-case-worker.js');
 
         myWorker.postMessage(jsonInputField.value);
         console.log("Main script > Posting message to swap-case-worker: ", jsonInputField.value);
@@ -402,14 +424,17 @@ function loadJSONToForm() {
 
 
 
-async function updateExamplecolor() {
-    let client = {}
-    Object.keys(formIds).forEach(k => {
-        client[k] = document.getElementById(formIds[k]).value;
-    });
-    delete client.id;
-    delete client.tel;
-    delete client.idnr;
+async function updateExamplecolor(client) {
+    if (!client) {
+        let client = {}
+        Object.keys(formIds).forEach(k => {
+            client[k] = document.getElementById(formIds[k]).value;
+        });
+        delete client.id;
+        delete client.tel;
+        delete client.idnr;
+    }
+
 
 
     if (typeof (Worker) !== "undefined") {
@@ -423,7 +448,10 @@ async function updateExamplecolor() {
             let color = e.data;
             myWorker.terminate();
             document.getElementById('color-example').innerHTML = JSON.stringify(color);
-            document.getElementById('color-example').style = 'background-color: '+ color.hex;
+            document.getElementById('color-example').style = 'background-color: ' + color.hex;
+            document.getElementById('color-example').style = 'color: ' + color.hex;
+            document.getElementById('client-color').value = JSON.stringify(color);
+
         }
     } else {
         alert("this webbrowser offers no webworker support :(");
@@ -457,6 +485,12 @@ Nashville, Arkansas(AR)
 Nazareth, Pennsylvania(PA)
 `
 ]
+
+function randomChar() {
+    let characters = 'qwertyuiopasdfghjklzxcvbnm';
+    return characters.charAt(Math.floor(Math.random() * characters.length));
+
+}
 
 function randomIdNumber() {
     let result = [];
