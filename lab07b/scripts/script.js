@@ -8,9 +8,14 @@ window.IDBKeyRange = window.IDBKeyRange ||
 
 
 if (!window.indexedDB) {
-    window.alert("Your browser doesn't support a stable version of IndexedDB.")
+    window.alert("Your browser doesn't support a stable version of IndexedDB.");
+    throw 'IndexedDB not supported';
 }
 
+if (!window.Worker) {
+    window.alert("Your browser doesn't support web workers.");
+    throw 'web workers not supported';
+}
 
 var editing = false
 var editingId = null
