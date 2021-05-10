@@ -14,9 +14,9 @@
     <meta name="author"
           content="Adam Kowalczyk">
     <meta name="description"
-          content="IPM lab05">
+          content="IPM lab07">
     <title>
-        lab06 indexedDb
+        lab07 webworker
     </title>
 
 </head>
@@ -89,14 +89,12 @@
 
 
                 <button class="btn btn-success hidden"
-                id="button-save"
-                        
+                        id="button-save"
                         onclick="saveClient()">
                     Zapisz zmiany
                 </button>
                 <button class="btn btn-danger hidden"
-                id="button-cancel"
-                        
+                        id="button-cancel"
                         onclick="cancelEditing()">
                     Anuluj
                 </button>
@@ -105,7 +103,7 @@
 
 
                 <button class="btn btn-info"
-                id="button-add"
+                        id="button-add"
                         onclick="addClient()">
                     Dodaj klienta do bazy
                 </button>
@@ -122,6 +120,37 @@
             </div>
             <div class="col"></div>
 
+        </div>
+
+        <div class="row w-100 m-0">
+            <div class="col"></div>
+            <div class="col-auto">
+                <textarea rows="7"
+                          cols="60"
+                          name="text"
+                          id="textarea-json-form"
+                          value="{
+    'name':'jan kowalski',
+    'email':'jan@kowalski.pl'
+    'tel':'000000'
+    'idnr':'abc123456'
+    'address':''
+}"
+                          placeholder="{
+    'name':'jan kowalski',
+    'email':'jan@kowalski.pl'
+    'tel':'000000'
+    'idnr':'abc123456'
+    'address':''
+}
+    "></textarea><br />
+                <button class="btn btn-info w-100"
+                        id="button-load"
+                        onclick="loadJSONToForm()">
+                    Wprowadź JSON do formularza
+                </button>
+            </div>
+            <div class="col"></div>
         </div>
 
 

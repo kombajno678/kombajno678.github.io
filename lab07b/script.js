@@ -135,7 +135,7 @@ function addClient() {
 
 function saveClient() {
     if (!editing) return;
-    
+
 
 
     if (!document.getElementById(formIds.name).checkValidity() ||
@@ -306,9 +306,7 @@ function Search() {
 
 
 
-window.onload = () => {
-    //readAll();
-}
+
 
 
 function clearForm() {
@@ -340,7 +338,9 @@ function switchToEditMode(id) {
 
 function switchToAddMode() {
     editing = false;
-    document.getElementById(editingId)?.setAttribute('class', 'row m-0 client-row')
+    if (document.getElementById(editingId)) {
+        document.getElementById(editingId).setAttribute('class', 'row m-0 client-row')
+    }
     editingId = null;
     document.getElementById('button-add').setAttribute('class', 'btn btn-info ');
     document.getElementById('button-save').setAttribute('class', 'btn btn-success hidden');
@@ -349,22 +349,10 @@ function switchToAddMode() {
 }
 
 function fillFormWithClientData(client) {
-    if (
-        'name' in client &&
-        'email' in client &&
-        'tel' in client &&
-        'address' in client &&
-        'idnr' in client
-    ) {
-        document.getElementById(formIds.name).value = client.name;
-        document.getElementById(formIds.email).value = client.email;
-        document.getElementById(formIds.tel).value = client.tel;
-        document.getElementById(formIds.address).value = client.address;
-        document.getElementById(formIds.idnr).value = client.idnr;
-    } else {
-        console.error('incorrect client', client)
-    }
-
+    fields = ['name', 'email', 'tel', 'address', 'idnr'];
+    fields.forEach(f => {
+        if (f in client) document.getElementById(formIds[f]).value = client[f];
+    })
 }
 
 function fillFormWithRandomData() {
@@ -385,6 +373,39 @@ function getRandomClient() {
     return client;
 
 }
+
+
+function loadJSONToForm() {
+    jsonInputField = document.getElementById('textarea-json-form');
+    jsonInputField.value = JSON.stringify(JSON.parse(jsonInputField.value), null, 4);
+
+    if (typeof (Worker) !== "undefined") {
+        let myWorker = new Worker('worker.js');
+
+        myWorker.postMessage(jsonInputField.value);
+        console.log("Main script > Posting message to webworker: ", jsonInputField.value);
+
+        myWorker.onmessage = function (e) {
+            console.log('Main script > Message received from worker: ', e.data);
+            let result = JSON.parse(e.data);
+            fillFormWithClientData(result);
+            myWorker.terminate();
+        }
+    } else {
+        alert("this webbrowser offers no webworker support :(");
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
 
 
 const addresses = [
