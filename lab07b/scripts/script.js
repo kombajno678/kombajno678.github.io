@@ -25,7 +25,8 @@ const formIds = {
     email: 'client-email',
     tel: 'client-tel',
     address: 'client-address',
-    idnr: 'client-idnr'
+    idnr: 'client-idnr',
+    photourl: 'client-photourl'
 }
 
 const filterIds = {
@@ -33,7 +34,8 @@ const filterIds = {
     email: 'filter-email',
     tel: 'filter-tel',
     address: 'filter-address',
-    idnr: 'filter-idnr'
+    idnr: 'filter-idnr',
+    photourl: 'filter-photourl'
 }
 
 
@@ -56,7 +58,8 @@ clientData = [{
         email: 'client-email',
         tel: 'client-tel',
         address: 'client-address',
-        idnr: 'client-idnr'
+        idnr: 'client-idnr',
+        photourl: 'client-photourl'
     },
     {
         id: 'b',
@@ -64,7 +67,8 @@ clientData = [{
         email: 'client-email',
         tel: 'client-tel',
         address: 'client-address',
-        idnr: 'client-idnr'
+        idnr: 'client-idnr',
+        photourl: 'client-photourl'
     }
 ]
 request.onupgradeneeded = (event) => {
@@ -90,23 +94,25 @@ request.onupgradeneeded = (event) => {
 
 function addClient() {
     if (editing) return;
-    if (!document.getElementById(formIds.name).checkValidity() ||
-        !document.getElementById(formIds.email).checkValidity() ||
-        !document.getElementById(formIds.tel).checkValidity() ||
-        !document.getElementById(formIds.address).checkValidity() ||
-        !document.getElementById(formIds.idnr).checkValidity()
-    ) {
+
+
+    if (Object.values(formIds).map(f => !document.getElementById(f).checkValidity()).find(f => f)) {
         alert("invalid form");
         return;
     }
     let client = {
         id: null,
-        name: document.getElementById(formIds.name).value,
-        email: document.getElementById(formIds.email).value,
-        tel: document.getElementById(formIds.tel).value,
-        address: document.getElementById(formIds.address).value,
-        idnr: document.getElementById(formIds.idnr).value
+        // name: document.getElementById(formIds.name).value,
+        // email: document.getElementById(formIds.email).value,
+        // tel: document.getElementById(formIds.tel).value,
+        // address: document.getElementById(formIds.address).value,
+        // idnr: document.getElementById(formIds.idnr).value,
+        // photourl: document.getElementById(formIds.photourl).value
     }
+    Object.keys(formIds).forEach(k => {
+        client[k] = document.getElementById(formIds[k]).value;
+    })
+
     client.id = getClientHash(client);
 
     let request = db.transaction(["client"], "readwrite")
@@ -115,14 +121,9 @@ function addClient() {
 
     request.onsuccess = (event) => {
         console.log('added new client', event);
-
-        document.getElementById(formIds.name).value = '';
-        document.getElementById(formIds.email).value = '';
-        document.getElementById(formIds.tel).value = '';
-        document.getElementById(formIds.address).value = '';
-        document.getElementById(formIds.idnr).value = '';
-
-
+        Object.keys(formIds).forEach(k => {
+            document.getElementById(formIds[k]).value = '';
+        })
         readAll(null, null);
     };
 
@@ -138,23 +139,22 @@ function saveClient() {
 
 
 
-    if (!document.getElementById(formIds.name).checkValidity() ||
-        !document.getElementById(formIds.email).checkValidity() ||
-        !document.getElementById(formIds.tel).checkValidity() ||
-        !document.getElementById(formIds.address).checkValidity() ||
-        !document.getElementById(formIds.idnr).checkValidity()
-    ) {
+    if (formIds.map(f => !document.getElementById(f).checkValidity()).find(f => f)) {
         alert("invalid form");
         return;
     }
     let client = {
         id: null,
-        name: document.getElementById(formIds.name).value,
-        email: document.getElementById(formIds.email).value,
-        tel: document.getElementById(formIds.tel).value,
-        address: document.getElementById(formIds.address).value,
-        idnr: document.getElementById(formIds.idnr).value
+        // name: document.getElementById(formIds.name).value,
+        // email: document.getElementById(formIds.email).value,
+        // tel: document.getElementById(formIds.tel).value,
+        // address: document.getElementById(formIds.address).value,
+        // idnr: document.getElementById(formIds.idnr).value,
+        // photourl: document.getElementById(formIds.photourl).value
     }
+    Object.keys(formIds).forEach(k => {
+        client[k] = document.getElementById(formIds[k]).value;
+    })
     client.id = editingId;
 
     console.log(client);
@@ -195,11 +195,12 @@ function readAll(filterfields, searchWords) {
 
 
             row.innerHTML = `
-                <div class="col-2 overflow">${cursor.value.name}</div>
-                <div class="col overflow">${cursor.value.email}</div>
-                <div class="col-2 overflow">${cursor.value.tel}</div>
-                <div class="col-2 overflow">${cursor.value.idnr}</div>
-                <div class="col-2 overflow">${cursor.value.address}</div>
+                <div class="col-2 overflow">${cursor.value.name || ''}</div>
+                <div class="col overflow">${cursor.value.email || ''}</div>
+                <div class="col-2 overflow">${cursor.value.tel || ''}</div>
+                <div class="col-2 overflow">${cursor.value.idnr || ''}</div>
+                <div class="col-2 overflow">${cursor.value.address || ''}</div>
+                <div class="col-2 overflow">${cursor.value.photourl || ''}</div>
                 <div class="col action-col del-col overflow"><button type="cutton" onclick="remove('${cursor.value.id}')">X</button></div>
                 <div class="col action-col edit-col overflow"><button type="cutton" onclick="edit('${cursor.value.id}')">edit</button></div>`;
 
@@ -238,7 +239,8 @@ function readAll(filterfields, searchWords) {
                             cursor.value.email.toLowerCase().includes(w) ||
                             cursor.value.tel.toLowerCase().includes(w) ||
                             cursor.value.idnr.toLowerCase().includes(w) ||
-                            cursor.value.address.toLowerCase().includes(w)
+                            cursor.value.address.toLowerCase().includes(w) ||
+                            cursor.value.photourl.toLowerCase().includes(w)
                         ) {
                             return true;
                         }
@@ -259,7 +261,7 @@ function readAll(filterfields, searchWords) {
 
 function remove(id) {
     if (editing) return;
-    console.log("deletijng id ", id);
+    console.log("deleting id ", id);
 
     if (confirm('are you sure?')) {
         let request = db.transaction(["client"], "readwrite")
@@ -310,11 +312,7 @@ function Search() {
 
 
 function clearForm() {
-    document.getElementById(formIds.name).value = '';
-    document.getElementById(formIds.email).value = '';
-    document.getElementById(formIds.tel).value = '';
-    document.getElementById(formIds.address).value = '';
-    document.getElementById(formIds.idnr).value = '';
+    Object.keys(formIds).forEach(k => document.getElementById(formIds[k]).value = '')
 }
 
 
@@ -349,14 +347,17 @@ function switchToAddMode() {
 }
 
 function fillFormWithClientData(client) {
-    fields = ['name', 'email', 'tel', 'address', 'idnr'];
-    fields.forEach(f => {
-        if (f in client) document.getElementById(formIds[f]).value = client[f];
+
+
+    fields = ['name', 'email', 'tel', 'address', 'idnr', 'photourl'];
+    Object.keys(formIds).forEach(k => {
+        if (k in client) document.getElementById(formIds[k]).value = client[k];
     })
 }
 
 function fillFormWithRandomData() {
     fillFormWithClientData(getRandomClient());
+    updateExamplecolor();
 }
 
 function getRandomClient() {
@@ -366,7 +367,8 @@ function getRandomClient() {
         email: emails[Math.floor(Math.random() * emails.length)],
         tel: phones[Math.floor(Math.random() * phones.length)],
         address: addresses[Math.floor(Math.random() * addresses.length)],
-        idnr: randomIdNumber()
+        idnr: randomIdNumber(),
+        photourl: '???'
     }
 
     client.id = getClientHash(client);
@@ -380,13 +382,13 @@ function loadJSONToForm() {
     jsonInputField.value = JSON.stringify(JSON.parse(jsonInputField.value), null, 4);
 
     if (typeof (Worker) !== "undefined") {
-        let myWorker = new Worker('worker.js');
+        let myWorker = new Worker('workers/swap-case-worker.js');
 
         myWorker.postMessage(jsonInputField.value);
-        console.log("Main script > Posting message to webworker: ", jsonInputField.value);
+        console.log("Main script > Posting message to swap-case-worker: ", jsonInputField.value);
 
         myWorker.onmessage = function (e) {
-            console.log('Main script > Message received from worker: ', e.data);
+            console.log('Main script > Message received from swap-case-worker: ', e.data);
             let result = JSON.parse(e.data);
             fillFormWithClientData(result);
             myWorker.terminate();
@@ -395,8 +397,38 @@ function loadJSONToForm() {
         alert("this webbrowser offers no webworker support :(");
     }
 
+}
 
 
+
+
+async function updateExamplecolor() {
+    let client = {}
+    Object.keys(formIds).forEach(k => {
+        client[k] = document.getElementById(formIds[k]).value;
+    });
+    delete client.id;
+    delete client.tel;
+    delete client.idnr;
+
+
+    if (typeof (Worker) !== "undefined") {
+        let myWorker = new Worker('scripts/workers/calculate-color-worker.js');
+
+        console.log("Main script > Posting message to calculate-color-worker");
+        myWorker.postMessage(client);
+
+        myWorker.onmessage = (e) => {
+            console.log('Main script > Message received from calculate-color-worker: ', e.data);
+            let color = e.data;
+            myWorker.terminate();
+            document.getElementById('color-example').innerHTML = JSON.stringify(color);
+            document.getElementById('color-example').style = 'background-color: '+ color.hex;
+        }
+    } else {
+        alert("this webbrowser offers no webworker support :(");
+        return null;
+    }
 }
 
 
