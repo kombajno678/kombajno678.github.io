@@ -444,7 +444,7 @@ https://kombajno678.github.io/lab07b/index.html`);
 
 async function updateExamplecolor(client) {
     if (!client) {
-        let client = {}
+        client = {}
         Object.keys(formIds).forEach(k => {
             client[k] = document.getElementById(formIds[k]).value;
         });
