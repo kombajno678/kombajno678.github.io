@@ -28,7 +28,7 @@
             <div class="col">
                 Imie nazwisko<br />
                 <input type="text"
-                       onkeydown="updateExamplecolor()"
+                       onkeyup="updateExamplecolor()"
                        required
                        class="colored-input"
                        name="client-name"
@@ -40,7 +40,7 @@
             <div class="col">
                 Adres email<br />
                 <input type="email"
-                       onkeydown="updateExamplecolor()"
+                       onkeyup="updateExamplecolor()"
                        required
                        class="colored-input"
                        name="client-email"
@@ -74,7 +74,7 @@
             <div class="col">
                 Adres<br />
                 <input type="text"
-                       onkeydown="updateExamplecolor()"
+                       onkeyup="updateExamplecolor()"
                        required
                        class="colored-input"
                        name="client-address"
@@ -85,14 +85,13 @@
             <div class="col">
                 URL zdjęcia<br />
                 <input type="text"
-                       onkeydown="updateExamplecolor()"
+                       onkeyup="updateExamplecolor()"
                        required
                        class="colored-input"
                        name="client-photourl"
                        id="client-photourl"
                        placeholder="http://..."
-                       pattern="(?:http[s]?:\/\/)?(?:[a-zA-Z0-9-]+\.)+(?:[a-zA-Z0-9-]+)(?:\/[a-zA-Z\d\/\._-]+)?"
-                       >
+                       pattern="(?:http[s]?:\/\/)?(?:[a-zA-Z0-9-]+\.)+(?:[a-zA-Z0-9-]+)(?:\/[a-zA-Z\d\/\._-]+)?">
                 <input type="hidden"
                        id="client-color">
 
