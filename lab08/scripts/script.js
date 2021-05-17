@@ -32,7 +32,8 @@ const formIds = {
     address: 'client-address',
     idnr: 'client-idnr',
     photourl: 'client-photourl',
-    color: 'client-color'
+    color: 'client-color',
+    photoBlob: 'client-photo-blob',
 }
 
 const filterIds = {
@@ -41,7 +42,7 @@ const filterIds = {
     tel: 'filter-tel',
     address: 'filter-address',
     idnr: 'filter-idnr',
-    photourl: 'filter-photourl'
+    //photourl: 'filter-photourl'
 }
 
 
@@ -65,7 +66,7 @@ clientData = [{
         tel: 'client-tel',
         address: 'client-address',
         idnr: 'client-idnr',
-        photourl: 'client-photourl'
+        photoBlob: ''
     },
     {
         id: 'b',
@@ -74,7 +75,7 @@ clientData = [{
         tel: 'client-tel',
         address: 'client-address',
         idnr: 'client-idnr',
-        photourl: 'client-photourl'
+        photoBlob: ''
     }
 ]
 request.onupgradeneeded = (event) => {
@@ -187,8 +188,8 @@ function readAll(filterfields, searchWords) {
             row.setAttribute('class', 'row m-0 client-row');
             row.id = cursor.key;
 
-            if (cursor.value.photourl && (cursor.value.photourl + '').length > 5) {
-                let color = JSON.parse(cursor.value.color);
+            if (cursor.value.photoBlob && (cursor.value.photoBlob + '').length > 1) {
+                //let color = JSON.parse(cursor.value.color);
 
                 row.innerHTML = `
                             <div class="col overflow">${cursor.value.name || ''}</div>
@@ -198,9 +199,8 @@ function readAll(filterfields, searchWords) {
                             <div class="col overflow">${cursor.value.address || ''}</div>
                             
                             <div class="col overflow">
-                                <div class="display-photo-filter"
-                                style="background:linear-gradient(0deg, rgba(${color.r}, ${color.g}, ${color.b}, 0.5), rgba(${color.r}, ${color.g}, ${color.b}, 0.5)), url(${cursor.value.photourl || ''});">
-                                </div>
+                                <img src="${cursor.value.photoBlob}">
+                                
                             </div>
                             <div class="col action-col del-col overflow"><button type="cutton" onclick="remove('${cursor.value.id}')">X</button></div>
                             <div class="col action-col edit-col overflow"><button type="cutton" onclick="edit('${cursor.value.id}')">edit</button></div>`;
@@ -257,8 +257,7 @@ function readAll(filterfields, searchWords) {
                             cursor.value.email.toLowerCase().includes(w) ||
                             cursor.value.tel.toLowerCase().includes(w) ||
                             cursor.value.idnr.toLowerCase().includes(w) ||
-                            cursor.value.address.toLowerCase().includes(w) ||
-                            cursor.value.photourl.toLowerCase().includes(w)
+                            cursor.value.address.toLowerCase().includes(w)
                         ) {
                             return true;
                         }
@@ -301,6 +300,7 @@ function edit(id) {
         switchToEditMode(id)
         let client = JSON.parse(JSON.stringify(event.target.result));
         fillFormWithClientData(client);
+        updateExamplecolor(client);
     };
 }
 
@@ -369,6 +369,10 @@ function fillFormWithClientData(client) {
     Object.keys(formIds).forEach(k => {
         if (k in client) document.getElementById(formIds[k]).value = client[k];
     })
+    if('photoBlob' in client){
+        loadUrlIntoCanvas(client['photoBlob']);
+        
+    }
 }
 
 function fillFormWithRandomData() {
@@ -478,7 +482,10 @@ async function updateExamplecolor(client) {
                 myWorker.terminate();
                 document.getElementById('color-example').innerHTML = JSON.stringify(color);
                 document.getElementById('color-example').style = 'background-color: ' + color.hex;
-                document.getElementById('color-example').style = 'color: ' + color.hex;
+                //document.getElementById('color-example').style = 'color: ' + color.hex;
+
+                document.getElementById('color-example-form').value = color.hex;
+
                 document.getElementById('client-color').value = JSON.stringify(color);
                 let ctx = document.querySelector("#canvas").getContext("2d");
                 drawColoredRectangleOnCanvas(ctx);
@@ -531,6 +538,10 @@ function photoTypeFormChanged() {
 
 function onCanvasClick() {
 
+    // let blob = document.getElementById('client-photo-blob').value;
+
+    // document.getElementById('test-blob').src = blob;
+
 }
 
 function onPhotoUrlChange() {
@@ -540,6 +551,7 @@ function onPhotoUrlChange() {
 function loadUrlIntoCanvas(url) {
     let ctx = document.querySelector("#canvas").getContext("2d");
     let img = new Image();
+    img.setAttribute('crossorigin', 'anonymous');
     img.onerror = function (ev) {
         console.error('could not load photo');
         console.error(ev);
@@ -547,11 +559,7 @@ function loadUrlIntoCanvas(url) {
     img.onload = function () {
         drawImageOnCanvas(ctx, img);
         drawColoredRectangleOnCanvas(ctx);
-
-        document.getElementById('canvas-title').innerHTML = `podglad zdjecia`;
-
-        let dataURL = ctx.canvas.toDataURL('image/jpeg', 0.5);
-        console.log('dataURL', dataURL);
+        getBlobFromCanvas(ctx);
     };
     img.src = url;
 
@@ -573,12 +581,15 @@ function uploadPhoto() {
     const FR = new FileReader();
     FR.addEventListener("load", (evt) => {
         const img = new Image();
+        img.setAttribute('crossorigin', 'anonymous');
+        img.onerror = function (ev) {
+            console.error('could not load photo');
+            console.error(ev);
+        }
         img.addEventListener("load", () => {
             drawImageOnCanvas(ctx, img);
             drawColoredRectangleOnCanvas(ctx);
-            document.getElementById('canvas-title').innerHTML = `podglad zdjecia:`;
-            let dataURL = ctx.canvas.toDataURL('image/jpeg', 0.5);
-            console.log('dataURL', dataURL);
+            getBlobFromCanvas(ctx);
 
         });
         img.src = evt.target.result;
@@ -612,6 +623,14 @@ function drawColoredRectangleOnCanvas(ctx) {
         ctx.fillStyle = '#fff'
     }
     ctx.fillRect(40, 40, 20, 20);
+}
+
+function getBlobFromCanvas(ctx) {
+
+    let dataURL = ctx.canvas.toDataURL('image/jpeg', 0.5);
+    console.log('dataURL', dataURL);
+    document.getElementById('client-photo-blob').value = dataURL;
+
 }
 
 

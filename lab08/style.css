@@ -1,10 +1,10 @@
 input.colored-input:valid {
-    border: 5px solid green;
+    border: 1px solid green;
     background-color: rgba(0, 255, 0, 0.10);
 }
 
 input.colored-input:invalid {
-    border: 5px solid red;
+    border: 1px solid red;
     background-color: rgba(255, 0, 0, 0.10);
 }
 .colored-input{
@@ -149,4 +149,9 @@ input.colored-input:invalid {
 
 .hidden{
     display:none;
+}
+
+.form-cell{
+    border:1px solid rgba(0, 0, 0, 0.411);
+    padding:2rem;
 }

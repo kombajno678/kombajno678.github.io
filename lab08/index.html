@@ -26,7 +26,7 @@
     <body>
         <div class="container">
             <div class="row w-100 m-0">
-                <div class="col-sm-12 col-md-6 col-xl-3">
+                <div class="form-cell col-sm-12 col-md-6 col-xl-3">
                     Imie nazwisko<br />
                     <input type="text"
                            onkeyup="updateExamplecolor()"
@@ -38,7 +38,7 @@
                            placeholder="imie nazwisko">
 
                 </div>
-                <div class="col-sm-12 col-md-6 col-xl-3">
+                <div class="form-cell col-sm-12 col-md-6 col-xl-3">
                     Adres email<br />
                     <input type="email"
                            onkeyup="updateExamplecolor()"
@@ -50,7 +50,7 @@
 
 
                 </div>
-                <div class="col-sm-12 col-md-6 col-xl-3">
+                <div class="form-cell col-sm-12 col-md-6 col-xl-3">
                     Numer telefonu<br />
                     <input type="tel"
                            required
@@ -61,7 +61,7 @@
                            placeholder="+48 123-456-789">
 
                 </div>
-                <div class="col-sm-12 col-md-6 col-xl-3">
+                <div class="form-cell col-sm-12 col-md-6 col-xl-3">
                     Nr dowodu<br />
                     <input type="text"
                            required
@@ -72,7 +72,7 @@
                            placeholder="abc123456">
 
                 </div>
-                <div class="col-sm-12 col-md-6 col-xl-3">
+                <div class="form-cell col-sm-12 col-md-6 col-xl-3">
                     Adres<br />
                     <input type="text"
                            onkeyup="updateExamplecolor()"
@@ -83,7 +83,7 @@
                            placeholder="ulica nr miasto">
 
                 </div>
-                <div class="col-sm-12 col-md-6 col-xl-3">
+                <div class="form-cell col-sm-12 col-md-6 col-xl-3">
                     Zdjęcie<br />
                     <input type="radio"
                            id="photo-src-type-url"
@@ -118,22 +118,35 @@
 
                     <input type="hidden"
                            id="client-color">
+                    <input type="text"
+                           disabled
+                           id="client-photo-blob">
 
 
                 </div>
 
-                <div class="col-sm-12 col-md-6 col-xl-3 text-center">
+                <div class="form-cell col-sm-12 col-md-6 col-xl-3 text-center">
                     <div class="canvas-form-container text-center">
-                        <div id="canvas-title"></div>
+                        <div id="canvas-title">podgląd zdjęcia:</div>
                         <canvas id="canvas"
                                 width="100"
                                 height="100"
                                 onclick="onCanvasClick()"></canvas>
                     </div>
                 </div>
+                <div class="form-cell col-sm-12 col-md-6 col-xl-3 text-center">
+                    <div id="color-title">podgląd koloru:</div>
+
+                    <div id="color-example"></div>
+                    <input type="color"
+                           value="#ffffff"
+                           id="color-example-form"
+                           disabled>
+
+                </div>
 
 
-                <div id="color-example"></div>
+
             </div>
         </div>
 
@@ -310,12 +323,8 @@
                                    class="filter-field">
 
                         </div>
-                        <div class="col-2 overflow">
-                            <input type="text"
-                                   onkeyup="applyFilter()"
-                                   placeholder="url"
-                                   id="filter-photourl"
-                                   class="filter-field">
+                        <div class="col overflow">
+                            
 
                         </div>
                         <div class="col action-col overflow">
