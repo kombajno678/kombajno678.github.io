@@ -30,8 +30,8 @@ function rgbToHex(r, g, b) {
 
 
 onmessage = function (e) {
-    console.log('calculate-color-worker > Message received from main script', e);
     let client = e.data;
+    console.log('calculate-color-worker > Message received from main script ', JSON.stringify(e.data));
 
     let suma_wszystkich_liter = 0;
     Object.keys(client).forEach(k => {
@@ -47,6 +47,6 @@ onmessage = function (e) {
     color.hex = rgbToHex(color.r, color.g, color.b);
 
     let ret = color;
-    console.log('calculate-color-worker > Posting message back to main script', ret);
+    console.log('calculate-color-worker > Posting message back to main script', JSON.stringify(ret));
     postMessage(ret);
 }

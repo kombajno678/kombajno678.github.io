@@ -116,6 +116,8 @@ function addClient() {
 
     client.id = getClientHash(client);
 
+    console.log('adding client: ', client);
+
     let request = db.transaction(["client"], "readwrite")
         .objectStore("client")
         .add(client);
@@ -152,7 +154,7 @@ function saveClient() {
     })
     client.id = editingId;
 
-    console.log(client);
+    console.log('saving client', client);
 
     let request = db.transaction(["client"], "readwrite")
         .objectStore("client")
@@ -188,37 +190,23 @@ function readAll(filterfields, searchWords) {
             row.setAttribute('class', 'row m-0 client-row');
             row.id = cursor.key;
 
-            if (cursor.value.photoBlob && (cursor.value.photoBlob + '').length > 1) {
-                //let color = JSON.parse(cursor.value.color);
 
-                row.innerHTML = `
-                            <div class="col overflow">${cursor.value.name || ''}</div>
-                            <div class="col overflow">${cursor.value.email || ''}</div>
-                            <div class="col overflow">${cursor.value.tel || ''}</div>
-                            <div class="col overflow">${cursor.value.idnr || ''}</div>
-                            <div class="col overflow">${cursor.value.address || ''}</div>
-                            
-                            <div class="col overflow">
-                                <img src="${cursor.value.photoBlob}">
-                                
-                            </div>
-                            <div class="col action-col del-col overflow"><button type="cutton" onclick="remove('${cursor.value.id}')">X</button></div>
-                            <div class="col action-col edit-col overflow"><button type="cutton" onclick="edit('${cursor.value.id}')">edit</button></div>`;
-
-            } else {
-                row.innerHTML = `
-                    <div class="col overflow">${cursor.value.name || ''}</div>
-                    <div class="col overflow">${cursor.value.email || ''}</div>
-                    <div class="col overflow">${cursor.value.tel || ''}</div>
-                    <div class="col overflow">${cursor.value.idnr || ''}</div>
-                    <div class="col overflow">${cursor.value.address || ''}</div>
-                    <div class="col overflow"></div>
-                    <div class="col action-col del-col overflow"><button type="cutton" onclick="remove('${cursor.value.id}')">X</button></div>
-                    <div class="col action-col edit-col overflow"><button type="cutton" onclick="edit('${cursor.value.id}')">edit</button></div>`;
-            }
-
-
-
+            row.innerHTML = `
+                <div class="col overflow">${cursor.value.name || ''}</div>
+                <div class="col overflow">${cursor.value.email || ''}</div>
+                <div class="col overflow">${cursor.value.tel || ''}</div>
+                <div class="col overflow">${cursor.value.idnr || ''}</div>
+                <div class="col overflow">${cursor.value.address || ''}</div>
+                <div class="col overflow">
+                    ${(cursor.value.photoBlob && (cursor.value.photoBlob + '').length > 1) ? `
+                        <div class="col overflow">
+                            <img src="${cursor.value.photoBlob}">
+                        </div>` : ``}
+                        <input type="color" value="${cursor.value.color.hex}">
+                </div>
+                
+                <div class="col action-col del-col overflow"><button type="cutton" onclick="remove('${cursor.value.id}')">X</button></div>
+                <div class="col action-col edit-col overflow"><button type="cutton" onclick="edit('${cursor.value.id}')">edit</button></div>`;
 
 
             let addChild = false;
@@ -369,9 +357,9 @@ function fillFormWithClientData(client) {
     Object.keys(formIds).forEach(k => {
         if (k in client) document.getElementById(formIds[k]).value = client[k];
     })
-    if('photoBlob' in client){
+    if ('photoBlob' in client) {
         loadUrlIntoCanvas(client['photoBlob']);
-        
+
     }
 }
 
@@ -383,9 +371,9 @@ function fillFormWithRandomData() {
     document.getElementById('canvas')['disabled'] = true;
     document.getElementById('fileUpload')['disabled'] = true;
 
-    let c = getRandomClient()
+    let c = getRandomClient();
     fillFormWithClientData(c);
-    updateExamplecolor(c);
+    updateExamplecolor();
     onPhotoUrlChange();
 
 
@@ -456,16 +444,23 @@ https://kombajno678.github.io/lab07b/index.html`);
 
 
 
-async function updateExamplecolor(client) {
-    if (!client) {
+async function updateExamplecolor(c) {
+    console.log('updateExamplecolor', c);
+    let client;
+    if (!c) {
         client = {}
         Object.keys(formIds).forEach(k => {
             client[k] = document.getElementById(formIds[k]).value;
         });
-        delete client.id;
-        delete client.tel;
-        delete client.idnr;
+    } else {
+        client = JSON.parse(JSON.stringify(c));
     }
+    delete client.id;
+    delete client.tel;
+    delete client.idnr;
+    delete client.photoBlob;
+    delete client.photourl;
+    delete client.color;
 
 
 
@@ -538,15 +533,13 @@ function photoTypeFormChanged() {
 
 function onCanvasClick() {
 
-    // let blob = document.getElementById('client-photo-blob').value;
+    let blob = document.getElementById('client-photo-blob').value;
 
-    // document.getElementById('test-blob').src = blob;
-
-}
-
-function onPhotoUrlChange() {
+    document.getElementById('test-blob').src = blob;
 
 }
+
+
 
 function loadUrlIntoCanvas(url) {
     let ctx = document.querySelector("#canvas").getContext("2d");
@@ -567,9 +560,7 @@ function loadUrlIntoCanvas(url) {
 
 
 function onPhotoUrlChange() {
-    let x = document.getElementById('client-photourl');
-    console.log(x.value);
-    loadUrlIntoCanvas(x.value);
+    loadUrlIntoCanvas(document.getElementById('client-photourl').value);
 }
 
 function uploadPhoto() {
