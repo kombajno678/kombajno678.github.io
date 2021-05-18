@@ -124,9 +124,7 @@ function addClient() {
 
     request.onsuccess = (event) => {
         console.log('added new client', event);
-        Object.keys(formIds).forEach(k => {
-            document.getElementById(formIds[k]).value = '';
-        })
+        clearForm();
         readAll(null, null);
     };
 
@@ -186,28 +184,6 @@ function readAll(filterfields, searchWords) {
         var cursor = event.target.result;
 
         if (cursor) {
-            let row = document.createElement('div');
-            row.setAttribute('class', 'row m-0 client-row');
-            row.id = cursor.key;
-
-
-            row.innerHTML = `
-                <div class="col overflow">${cursor.value.name || ''}</div>
-                <div class="col overflow">${cursor.value.email || ''}</div>
-                <div class="col overflow">${cursor.value.tel || ''}</div>
-                <div class="col overflow">${cursor.value.idnr || ''}</div>
-                <div class="col overflow">${cursor.value.address || ''}</div>
-                <div class="col overflow">
-                    ${(cursor.value.photoBlob && (cursor.value.photoBlob + '').length > 1) ? `
-                        <div class="col overflow">
-                            <img src="${cursor.value.photoBlob}">
-                        </div>` : ``}
-                        <input type="color" value="${cursor.value.color.hex}">
-                </div>
-                
-                <div class="col action-col del-col overflow"><button type="cutton" onclick="remove('${cursor.value.id}')">X</button></div>
-                <div class="col action-col edit-col overflow"><button type="cutton" onclick="edit('${cursor.value.id}')">edit</button></div>`;
-
 
             let addChild = false;
 
@@ -254,10 +230,38 @@ function readAll(filterfields, searchWords) {
                     addChild = true;
                 }
             }
+
+
             if (addChild) {
+                let row = document.createElement('div');
+                row.setAttribute('class', 'row m-0 client-row');
+                row.id = cursor.key;
+                row.innerHTML = `
+                <div class="col overflow">${cursor.value.name || ''}</div>
+                <div class="col overflow">${cursor.value.email || ''}</div>
+                <div class="col overflow">${cursor.value.tel || ''}</div>
+                <div class="col overflow">${cursor.value.idnr || ''}</div>
+                <div class="col overflow">${cursor.value.address || ''}</div>
+                <div class="col-auto overflow text-center">
+                    ${(cursor.value.photoBlob && (cursor.value.photoBlob + '').length > 1) ? `
+                                <img src="${cursor.value.photoBlob}">
+                                <br>
+                                ` : ``}
+
+                            <input type="color" value="${JSON.parse(cursor.value.color).hex}">
+                </div>
+                <div class="col action-col del-col overflow">
+                    <button type="cutton" onclick="remove('${cursor.value.id}')">
+                        ❌
+                    </button>
+                </div>
+                <div class="col action-col edit-col overflow">
+                    <button type="cutton" onclick="edit('${cursor.value.id}')">
+                        ✏
+                    </button>
+                </div>`;
                 table.appendChild(row);
             }
-
 
             cursor.continue();
         } else {}
@@ -268,7 +272,7 @@ function remove(id) {
     if (editing) return;
     console.log("deleting id ", id);
 
-    if (confirm('are you sure?')) {
+    if (confirm('Czy na pewno chcesz usunąć wpis?')) {
         let request = db.transaction(["client"], "readwrite")
             .objectStore("client")
             .delete(id);
@@ -308,7 +312,8 @@ function Search() {
     if (searchStr && searchStr.length >= 1) {
         let words = searchStr.split(' ');
         readAll(null, words);
-
+    } else {
+        readAll(null, null);
     }
 }
 
@@ -318,7 +323,16 @@ function Search() {
 
 
 function clearForm() {
-    Object.keys(formIds).forEach(k => document.getElementById(formIds[k]).value = '')
+    Object.keys(formIds).forEach(k => document.getElementById(formIds[k]).value = '');
+    document.getElementById('color-example').value = '';
+    document.getElementById('color-example').style = '';
+    document.getElementById('color-example-form').value = '';
+    document.getElementById('client-color').value = '';
+
+    let ctx = document.querySelector("#canvas").getContext("2d");
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+
 }
 
 
@@ -484,6 +498,7 @@ async function updateExamplecolor(c) {
                 document.getElementById('client-color').value = JSON.stringify(color);
                 let ctx = document.querySelector("#canvas").getContext("2d");
                 drawColoredRectangleOnCanvas(ctx);
+                getBlobFromCanvas(ctx);
             }
         } catch {
             alert(`

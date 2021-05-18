@@ -7,8 +7,9 @@ input.colored-input:invalid {
     border: 1px solid red;
     background-color: rgba(255, 0, 0, 0.10);
 }
-.colored-input{
-    width:100%;
+
+.colored-input {
+    width: 100%;
 }
 
 
@@ -52,6 +53,10 @@ input.colored-input:invalid {
 
 .filter-field::placeholder {
     color: rgb(129, 247, 255);
+}
+
+.filter-photo {
+    width: 100px !important;
 }
 
 .action-col {
@@ -140,18 +145,22 @@ input.colored-input:invalid {
 .display-photo-filter {
 
     max-width: 200px;
-    margin:auto;
+    margin: auto;
     height: 200px;
-    background-repeat:no-repeat, no-repeat !important;
+    background-repeat: no-repeat, no-repeat !important;
 
 }
 
 
-.hidden{
-    display:none;
+.hidden {
+    display: none;
 }
 
-.form-cell{
-    border:1px solid rgba(0, 0, 0, 0.411);
-    padding:2rem;
+.form-cell {
+    box-shadow: 1px 1px 0px 0px #000;
+    padding: 2rem;
+}
+
+.h-78{
+    height: 78%;
 }

@@ -24,136 +24,177 @@
 <body>
 
     <body>
-        <div class="container">
-            <div class="row w-100 m-0">
-                <div class="form-cell col-sm-12 col-md-6 col-xl-3">
-                    Imie nazwisko<br />
-                    <input type="text"
-                           onkeyup="updateExamplecolor()"
-                           required
-                           class="colored-input"
-                           name="client-name"
-                           id="client-name"
-                           pattern="[A-Za-z-]{1,} [A-Za-z-]{1,}"
-                           placeholder="imie nazwisko">
+        <div class="w-100 p-0 m-0">
 
-                </div>
-                <div class="form-cell col-sm-12 col-md-6 col-xl-3">
-                    Adres email<br />
-                    <input type="email"
-                           onkeyup="updateExamplecolor()"
-                           required
-                           class="colored-input"
-                           name="client-email"
-                           id="client-email"
-                           placeholder="imie.nazwisko@mail.pl">
+            <div class="row">
+                <div class="col">
+                    <!-- FORM -->
+                    <div class="row w-100 m-0">
+                        <div class="form-cell col-sm-12 col-md-6 col-xl-3">
+                            Imie nazwisko<br />
+                            <input type="text"
+                                   onkeyup="updateExamplecolor()"
+                                   required
+                                   class="colored-input"
+                                   name="client-name"
+                                   id="client-name"
+                                   pattern="[A-Za-z-]{1,} [A-Za-z-]{1,}"
+                                   placeholder="imie nazwisko">
 
-
-                </div>
-                <div class="form-cell col-sm-12 col-md-6 col-xl-3">
-                    Numer telefonu<br />
-                    <input type="tel"
-                           required
-                           class="colored-input"
-                           name="client-tel"
-                           id="client-tel"
-                           pattern="^([+]?[0-9]{2}[ ]?)?[0-9]{3}[-]?[0-9]{3}[-]?[0-9]{3}"
-                           placeholder="+48 123-456-789">
-
-                </div>
-                <div class="form-cell col-sm-12 col-md-6 col-xl-3">
-                    Nr dowodu<br />
-                    <input type="text"
-                           required
-                           class="colored-input"
-                           name="client-idnr"
-                           id="client-idnr"
-                           pattern="[A-Za-z]{3}[0-9]{6}"
-                           placeholder="abc123456">
-
-                </div>
-                <div class="form-cell col-sm-12 col-md-6 col-xl-3">
-                    Adres<br />
-                    <input type="text"
-                           onkeyup="updateExamplecolor()"
-                           required
-                           class="colored-input"
-                           name="client-address"
-                           id="client-address"
-                           placeholder="ulica nr miasto">
-
-                </div>
-                <div class="form-cell col-sm-12 col-md-6 col-xl-3">
-                    Zdjęcie<br />
-                    <input type="radio"
-                           id="photo-src-type-url"
-                           class="photo-src-type"
-                           name="photo-src-type"
-                           value="url"
-                           checked
-                           onchange="photoTypeFormChanged()"> z url <br>
+                        </div>
+                        <div class="form-cell col-sm-12 col-md-6 col-xl-3">
+                            Adres email<br />
+                            <input type="email"
+                                   onkeyup="updateExamplecolor()"
+                                   required
+                                   class="colored-input"
+                                   name="client-email"
+                                   id="client-email"
+                                   placeholder="imie.nazwisko@mail.pl">
 
 
-                    <input type="text"
-                           onkeyup="updateExamplecolor();onPhotoUrlChange()"
-                           required
-                           class="colored-input"
-                           name="client-photourl"
-                           id="client-photourl"
-                           placeholder="http://..."
-                           pattern="(?:http[s]?:\/\/)?(?:[a-zA-Z0-9-]+\.)+(?:[a-zA-Z0-9-]+)(?:\/[a-zA-Z\d\/\._-]+)?">
+                        </div>
+                        <div class="form-cell col-sm-12 col-md-6 col-xl-3">
+                            Numer telefonu<br />
+                            <input type="tel"
+                                   required
+                                   class="colored-input"
+                                   name="client-tel"
+                                   id="client-tel"
+                                   pattern="^([+]?[0-9]{2}[ ]?)?[0-9]{3}[-]?[0-9]{3}[-]?[0-9]{3}"
+                                   placeholder="+48 123-456-789">
+
+                        </div>
+                        <div class="form-cell col-sm-12 col-md-6 col-xl-3">
+                            Nr dowodu<br />
+                            <input type="text"
+                                   required
+                                   class="colored-input"
+                                   name="client-idnr"
+                                   id="client-idnr"
+                                   pattern="[A-Za-z]{3}[0-9]{6}"
+                                   placeholder="abc123456">
+
+                        </div>
+                        <div class="form-cell col-sm-12 col-md-6 col-xl-3">
+                            Adres<br />
+                            <input type="text"
+                                   onkeyup="updateExamplecolor()"
+                                   required
+                                   class="colored-input"
+                                   name="client-address"
+                                   id="client-address"
+                                   placeholder="ulica nr miasto">
+
+                        </div>
+                        <div class="form-cell col-sm-12 col-md-6 col-xl-3">
+                            Zdjęcie<br />
+                            <input type="radio"
+                                   id="photo-src-type-url"
+                                   class="photo-src-type"
+                                   name="photo-src-type"
+                                   value="url"
+                                   checked
+                                   onchange="photoTypeFormChanged()"> z url <br>
 
 
-                    <input type="radio"
-                           id="photo-src-type-file"
-                           class="photo-src-type"
-                           name="photo-src-type"
-                           value="file"
-                           onchange="photoTypeFormChanged()"> z pliku <br>
-                    <input type="file"
-                           id="fileUpload"
-                           accept="image/*"
-                           onchange="uploadPhoto()"
-                           disabled />
-
-                    <input type="hidden"
-                           id="client-color">
-                    <input type="text"
-                           disabled
-                           id="client-photo-blob">
+                            <input type="text"
+                                   onkeyup="updateExamplecolor();onPhotoUrlChange()"
+                                   required
+                                   class="colored-input"
+                                   name="client-photourl"
+                                   id="client-photourl"
+                                   placeholder="http://..."
+                                   pattern="(?:[hH][tT]{2}[pP][sS]?:\/\/)?(?:[a-zA-Z0-9-]+\.)+(?:[a-zA-Z0-9-]+)(?:\/[a-zA-Z\d\/\._-]+)?">
 
 
-                </div>
+                            <input type="radio"
+                                   id="photo-src-type-file"
+                                   class="photo-src-type"
+                                   name="photo-src-type"
+                                   value="file"
+                                   onchange="photoTypeFormChanged()"> z pliku <br>
+                            <input type="file"
+                                   id="fileUpload"
+                                   accept="image/*"
+                                   onchange="uploadPhoto()"
+                                   disabled />
 
-                <div class="form-cell col-sm-12 col-md-6 col-xl-3 text-center">
-                    <div class="canvas-form-container text-center">
-                        <div id="canvas-title">podgląd zdjęcia:</div>
-                        <canvas id="canvas"
-                                width="100"
-                                height="100"
-                                onclick="onCanvasClick()"></canvas>
+                            <input type="hidden"
+                                   id="client-color">
+                            <input type="text"
+                                   disabled
+                                   id="client-photo-blob">
+
+
+                        </div>
+
+                        <div class="form-cell col-sm-12 col-md-6 col-xl-3 text-center">
+                            <div class="canvas-form-container text-center">
+                                <div id="canvas-title">podgląd zdjęcia:</div>
+                                <canvas id="canvas"
+                                        width="100"
+                                        height="100"
+                                        onclick="onCanvasClick()"></canvas>
                                 <br>
-                                <img src="" id="test-blob">
+                                <img src=""
+                                     id="test-blob">
+                            </div>
+                        </div>
+                        <div class="form-cell col-sm-12 col-md-6 col-xl-3 text-center">
+                            <div id="color-title">podgląd koloru:</div>
+
+                            <div id="color-example"></div>
+                            <input type="color"
+                                   value="#ffffff"
+                                   id="color-example-form"
+                                   disabled>
+
+                        </div>
+
+
+
+
+
+
                     </div>
                 </div>
-                <div class="form-cell col-sm-12 col-md-6 col-xl-3 text-center">
-                    <div id="color-title">podgląd koloru:</div>
-
-                    <div id="color-example"></div>
-                    <input type="color"
-                           value="#ffffff"
-                           id="color-example-form"
-                           disabled>
+                <div class="col-auto">
+                    <!-- JSON -->
+                    <textarea rows="9"
+                              class="h-78"
+                              cols="60"
+                              name="text"
+                              id="textarea-json-form"
+                              placeholder="{
+&quot;name&quot;:&quot;jan kowalski&quot;,
+&quot;email&quot;:&quot;jan@kowalski.pl&quot;
+&quot;tel&quot;:&quot;000000&quot;
+&quot;idnr&quot;:&quot;abc123456&quot;
+&quot;address&quot;:&quot;&quot;,
+&quot;photourl&quot;:&quot;&quot;
+            }
+                "></textarea>
+                    <br />
+                    <button class="btn btn-info w-100"
+                            id="button-load"
+                            onclick="loadJSONToForm()">
+                        ⬅ Wprowadź JSON do formularza
+                    </button>
+                    <br />
+                    <button class="btn btn-secondary w-100"
+                            id="button-load"
+                            onclick="loadFormToJSON()">
+                        ➡ Wprowadź formularz do JSON
+                    </button>
 
                 </div>
-
-
-
             </div>
+
         </div>
 
 
-        <div class="row w-100 m-0">
+        <div class="row w-100 m-3">
             <div class="col"></div>
             <div class="col-auto">
 
@@ -161,12 +202,12 @@
                 <button class="btn btn-success hidden"
                         id="button-save"
                         onclick="saveClient()">
-                    Zapisz zmiany
+                    ✅ Zapisz zmiany
                 </button>
                 <button class="btn btn-danger hidden"
                         id="button-cancel"
                         onclick="cancelEditing()">
-                    Anuluj
+                    ❌ Anuluj
                 </button>
             </div>
             <div class="col-auto">
@@ -175,14 +216,14 @@
                 <button class="btn btn-info"
                         id="button-add"
                         onclick="addClient()">
-                    Dodaj klienta do bazy
+                    ➕ Dodaj klienta do bazy
                 </button>
             </div>
             <div class="col-auto">
 
                 <button class="btn btn-secondary"
                         onclick="fillFormWithRandomData()">
-                    Wypełnij losowymi danycmi
+                    🎲 Wypełnij losowymi danymi
                 </button>
 
 
@@ -192,35 +233,7 @@
 
         </div>
 
-        <div class="row w-100 m-0">
-            <div class="col"></div>
-            <div class="col-auto">
-                <textarea rows="7"
-                          cols="60"
-                          name="text"
-                          id="textarea-json-form"
-                          placeholder="{
-    &quot;name&quot;:&quot;jan kowalski&quot;,
-    &quot;email&quot;:&quot;jan@kowalski.pl&quot;
-    &quot;tel&quot;:&quot;000000&quot;
-    &quot;idnr&quot;:&quot;abc123456&quot;
-    &quot;address&quot;:&quot;&quot;,
-    &quot;photourl&quot;:&quot;&quot;
-}
-    "></textarea><br />
-                <button class="btn btn-info w-100"
-                        id="button-load"
-                        onclick="loadJSONToForm()">
-                    Wprowadź JSON do formularza
-                </button><br />
-                <button class="btn btn-secondary w-100"
-                        id="button-load"
-                        onclick="loadFormToJSON()">
-                    Wprowadź formularz do JSON
-                </button>
-            </div>
-            <div class="col"></div>
-        </div>
+
 
 
 
@@ -285,62 +298,61 @@
 
         <div class="container-fluid container-scroll m-0 p-0 w-100">
             <div class="table m-0">
-                <b>
-                    <div class="row m-0 header-row">
-                        <div class="col-2 overflow">
-                            <input type="text"
-                                   onkeyup="applyFilter()"
-                                   placeholder="imie nazwisko"
-                                   id="filter-name"
-                                   class="filter-field">
-                        </div>
-                        <div class="col overflow">
-                            <input type="text"
-                                   onkeyup="applyFilter()"
-                                   placeholder="email"
-                                   id="filter-email"
-                                   class="filter-field">
 
-                        </div>
-                        <div class="col-2 overflow">
-                            <input type="text"
-                                   onkeyup="applyFilter()"
-                                   placeholder="tel"
-                                   id="filter-tel"
-                                   class="filter-field">
-
-                        </div>
-                        <div class="col-2 overflow">
-                            <input type="text"
-                                   onkeyup="applyFilter()"
-                                   placeholder="nr dowodu"
-                                   id="filter-idnr"
-                                   class="filter-field">
-                        </div>
-                        <div class="col-2 overflow">
-                            <input type="text"
-                                   onkeyup="applyFilter()"
-                                   placeholder="adres"
-                                   id="filter-address"
-                                   class="filter-field">
-
-                        </div>
-                        <div class="col overflow">
-                            
-
-                        </div>
-                        <div class="col action-col overflow">
-
-                        </div>
-                        <div class="col action-col overflow">
-
-                        </div>
+                <div class="row m-0 header-row">
+                    <div class="col overflow">
+                        <input type="text"
+                               onkeyup="applyFilter()"
+                               placeholder="imie nazwisko"
+                               id="filter-name"
+                               class="filter-field">
                     </div>
-                </b>
+                    <div class="col overflow">
+                        <input type="text"
+                               onkeyup="applyFilter()"
+                               placeholder="email"
+                               id="filter-email"
+                               class="filter-field">
 
-                <div id="table">
+                    </div>
+                    <div class="col overflow">
+                        <input type="text"
+                               onkeyup="applyFilter()"
+                               placeholder="tel"
+                               id="filter-tel"
+                               class="filter-field">
 
+                    </div>
+                    <div class="col overflow">
+                        <input type="text"
+                               onkeyup="applyFilter()"
+                               placeholder="nr dowodu"
+                               id="filter-idnr"
+                               class="filter-field">
+                    </div>
+                    <div class="col overflow">
+                        <input type="text"
+                               onkeyup="applyFilter()"
+                               placeholder="adres"
+                               id="filter-address"
+                               class="filter-field">
+
+                    </div>
+                    <div class="col-auto overflow">
+                        <input type="text"
+                               onkeyup=""
+                               placeholder="zdjęcie"
+                               disabled
+                               class="filter-field filter-photo">
+                    </div>
+                    <div class="col action-col overflow"></div>
+                    <div class="col action-col overflow"></div>
                 </div>
+
+
+                <span id="table">
+
+                </span>
 
             </div>
         </div>
