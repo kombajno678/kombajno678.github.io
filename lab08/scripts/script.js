@@ -563,8 +563,15 @@ function loadUrlIntoCanvas(url) {
     img.onerror = function (ev) {
         console.error('could not load photo');
         console.error(ev);
+
+        document.getElementById('client-photourl').setAttribute('class', 'colored-input invalid');
+        document.getElementById('photo-url-desc').setAttribute('class', 'invalid');
+        document.getElementById('photo-url-desc').innerHTML = 'brak zdjecia pod tym linkiem';
     }
     img.onload = function () {
+        document.getElementById('client-photourl').setAttribute('class', 'colored-input valid');
+        document.getElementById('photo-url-desc').setAttribute('class', 'valid');
+        document.getElementById('photo-url-desc').innerHTML = '';
         drawImageOnCanvas(ctx, img);
         drawColoredRectangleOnCanvas(ctx);
         getBlobFromCanvas(ctx);
@@ -575,7 +582,11 @@ function loadUrlIntoCanvas(url) {
 
 
 function onPhotoUrlChange() {
-    loadUrlIntoCanvas(document.getElementById('client-photourl').value);
+    let url = document.getElementById('client-photourl').value;
+
+    // check if actual photo in this url
+    
+    loadUrlIntoCanvas(url);
 }
 
 function uploadPhoto() {
