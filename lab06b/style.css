@@ -182,3 +182,41 @@ input.colored-input:invalid {
 .h-78{
     height: 78%;
 }
+
+
+
+
+
+
+@keyframes highlight {
+    0% {
+        background: rgba(0, 247, 12, 0.5);
+    }
+    20% {
+        background: rgba(0, 247, 12, 1)
+    }
+    100% {
+        background: none;
+    }
+}
+@keyframes highlight2 {
+    0% {
+        background: rgba(0, 210, 247, 0.5);
+    }
+    20% {
+        background: rgba(0, 210, 247, 1)
+    }
+    100% {
+        background: none;
+    }
+}
+
+.freshly-edited{
+   animation: ease-out highlight 1s;
+}
+
+
+.freshly-added{
+    animation: ease-out highlight2 1s;
+
+}

@@ -12,9 +12,9 @@ if (!window.indexedDB) {
 }
 
 
-var editing = false
-var editingId = null
-
+var editing = false;
+var editingId = null;
+var feashlyAddedClientId = null;
 
 function getClientHash(client) {
     return SHA1(client.name + client.email + '.' + client.tel + client.address + client.idnr)
@@ -108,6 +108,7 @@ function addClient() {
         idnr: document.getElementById(formIds.idnr).value
     }
     client.id = getClientHash(client);
+    feashlyAddedClientId = client.id;
 
     let request = db.transaction(["client"], "readwrite")
         .objectStore("client")
@@ -179,6 +180,19 @@ function readAll(filterfields, searchWords) {
     if (!db) {
         return;
     }
+    if (!filterfields) {
+        filterfields = {};
+        Object.keys(filterIds).forEach(k => {
+            let field = document.getElementById(filterIds[k]);
+            filterfields[k] = field.value
+        });
+    }
+    if(!searchWords){
+        let searchStr = document.getElementById('google-field').value.trim();
+        if (searchStr && searchStr.length >= 1) {
+            searchWords = searchStr.split(' ');
+        }
+    }
     //console.log(filterfields);
     let objectStore = db.transaction("client").objectStore("client");
 
@@ -200,8 +214,9 @@ function readAll(filterfields, searchWords) {
                     if (filterfields[k] && filterfields[k].trim().length >= 1) {
                         skipCheck = false;
 
-                        if (cursor.value[k].includes(filterfields[k].trim())) {
+                        if (cursor.value[k].toLowerCase().includes(filterfields[k].trim().toLowerCase())) {
                             filterCheck = filterCheck && true;
+
                         } else {
                             filterCheck = false;
                         }
@@ -239,8 +254,17 @@ function readAll(filterfields, searchWords) {
 
             if (addChild) {
                 let row = document.createElement('div');
-                row.setAttribute('class', 'row m-0 client-row');
                 row.id = cursor.key;
+                console.log(`${editingId} == ${row.id}`);
+                if(feashlyAddedClientId == row.id){
+                    row.setAttribute('class', 'row m-0 client-row freshly-added');
+                    feashlyAddedClientId = null;
+                }else if(editingId == row.id){
+                    row.setAttribute('class', 'row m-0 client-row freshly-edited');
+                    editingId = null;
+                }else{
+                    row.setAttribute('class', 'row m-0 client-row');
+                }
                 row.innerHTML = `
                 <div class="col overflow">${cursor.value.name || ''}</div>
                 <div class="col overflow">${cursor.value.email || ''}</div>
@@ -304,6 +328,8 @@ function applyFilter() {
 
 
 function Search() {
+
+
     let searchStr = document.getElementById('google-field').value.trim();
     if (searchStr && searchStr.length >= 1) {
         let words = searchStr.split(' ');
@@ -349,7 +375,7 @@ function switchToAddMode() {
     if (document.getElementById(editingId)) {
         document.getElementById(editingId).setAttribute('class', 'row m-0 client-row')
     }
-    editingId = null;
+    //editingId = null;
     document.getElementById('button-add').setAttribute('class', 'btn btn-info ');
     document.getElementById('button-save').setAttribute('class', 'btn btn-success hidden');
     document.getElementById('button-cancel').setAttribute('class', 'btn btn-danger hidden');
@@ -371,7 +397,7 @@ function getRandomClient() {
     let client = {
         id: null,
         name: names[Math.floor(Math.random() * names.length)],
-        email: randomChar() + randomChar() + randomChar() + Math.floor(Math.random() *9) + Math.floor(Math.random() *9) + Math.floor(Math.random() *9) + emails[Math.floor(Math.random() * emails.length)] ,
+        email: randomChar() + randomChar() + randomChar() + Math.floor(Math.random() * 9) + Math.floor(Math.random() * 9) + Math.floor(Math.random() * 9) + emails[Math.floor(Math.random() * emails.length)],
         tel: phones[Math.floor(Math.random() * phones.length)],
         address: addresses[Math.floor(Math.random() * addresses.length)],
         idnr: randomIdNumber()
@@ -381,6 +407,7 @@ function getRandomClient() {
     return client;
 
 }
+
 function randomChar() {
     let characters = 'qwertyuiopasdfghjklzxcvbnm';
     return characters.charAt(Math.floor(Math.random() * characters.length));
