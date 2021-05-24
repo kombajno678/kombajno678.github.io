@@ -268,8 +268,8 @@ function readAll(filterfields, searchWords) {
                 row.innerHTML = `
                 <div class="col overflow">${cursor.value.name || ''}</div>
                 <div class="col overflow">${cursor.value.email || ''}</div>
-                <div class="col overflow">${cursor.value.tel || ''}</div>
-                <div class="col overflow">${cursor.value.idnr || ''}</div>
+                <div class="col col-tel overflow">${cursor.value.tel || ''}</div>
+                <div class="col col-tel overflow">${cursor.value.idnr || ''}</div>
                 <div class="col overflow">${cursor.value.address || ''}</div>
                 <div class="col action-col del-col overflow">
                     <button type="cutton" onclick="remove('${cursor.value.id}')">

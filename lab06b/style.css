@@ -50,12 +50,16 @@ input.colored-input:invalid {
 }
 
 .overflow {
-    /*
+    
     text-overflow: ellipsis;
-    white-space: nowrap;
     overflow: hidden;
-    */
+    word-wrap: break-word;
+    display: inline-block;
+    
     min-width: 80px !important;
+}
+.col-tel{
+    max-width:150px !important;
 }
 
 .container-scroll {
