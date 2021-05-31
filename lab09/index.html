@@ -26,37 +26,41 @@
     <div class="w-100 p-0 m-0">
 
 
-        <div class="row">
-            <div class="col-12">
-
+        <div class="row w-100 m-0">
+            <div class="col-12 m-0">
+                <h4>Sklep:</h4>
                 <!-- SHOP -->
                 <form>
                     <label for="cars">Wybierz produkt:</label>
 
                     <select name="cars"
-                            id="cars">
-                        <option value="volvo">Volvo</option>
-                        <option value="saab">Saab</option>
-                        <option value="mercedes">Mercedes</option>
-                        <option value="audi">Audi</option>
+                            id="select-cars">
+                        <option value="null" disabled>wczytywanie...</option>
                     </select>
 
-                    <label for="client">Wybrany kleint:</label>
+                    <label for="count">Wybierz ilość:</label>
+                    <input name="count" id="shop-count" type="number" min=1 max=10 value=1>
 
-                    <input name="client" type="text" disabled placeholder="(wybierz kleinta)">
+                    <label for="client">Wybrany klient:</label>
 
+                    <input name="client" id="shop-client-id" type="text" hidden disabled placeholder="(wybierz kleinta)">
+                    <input name="client-desc" id="shop-client-desc" type="text" disabled placeholder="kliknij ✔ przy kliencie">
+
+                    <button type="button" id="button-generate-receipt" class="btn btn-primary" disabled onclick="generateReceipt()">
+                        Generuj fakturę
+                    </button>
 
 
                 </form>
 
             </div>
-            <div class="col">
+            <div class="col m-0">
+                <h4>Dodawanie klienta:</h4>
                 <!-- FORM -->
                 <div class="row w-100 m-0">
                     <div class="form-cell col-sm-12 col-md-4 col-xl">
                         Imie nazwisko<br />
                         <input type="text"
-                               onkeyup="updateExamplecolor()"
                                required
                                class="colored-input"
                                name="client-name"
@@ -68,7 +72,6 @@
                     <div class="form-cell col-sm-12 col-md-4 col-xl">
                         Adres email<br />
                         <input type="email"
-                               onkeyup="updateExamplecolor()"
                                required
                                class="colored-input"
                                name="client-email"
@@ -102,7 +105,6 @@
                     <div class="form-cell col-sm-12 col-md-4 col-xl">
                         Adres<br />
                         <input type="text"
-                               onkeyup="updateExamplecolor()"
                                required
                                class="colored-input"
                                name="client-address"
@@ -121,7 +123,7 @@
 
 
 
-    <div class="row w-100 m-3">
+    <div class="row w-100 m-0">
         <div class="col"></div>
         <div class="col-auto">
 
@@ -223,6 +225,7 @@
 
 
     <div class="container-fluid container-scroll m-0 p-0 w-100">
+        <h4>Baza klientów:</h4>
         <div class="table m-0">
 
             <div class="row m-0 header-row">

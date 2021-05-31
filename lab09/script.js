@@ -7,6 +7,40 @@ window.IDBKeyRange = window.IDBKeyRange ||
     window.webkitIDBKeyRange || window.msIDBKeyRange
 
 
+const items = [{
+        name: 'Volvo',
+        price: 49000
+    },
+    {
+        name: 'Audi',
+        price: 99000
+    },
+    {
+        name: 'Tesla',
+        price: 209000
+    },
+    {
+        name: 'Ford',
+        price: 149000
+    },
+    {
+        name: 'BMW',
+        price: 169000
+    },
+]
+window.addEventListener('load', (event) => {
+    localStorage.clear('selected-client');
+    document.getElementById('select-cars').innerHTML = '';
+    items.forEach(c => {
+        let d = `<option value="${c.name}">${c.name} - ${c.price}</option>`;
+        document.getElementById('select-cars').innerHTML = document.getElementById('select-cars').innerHTML + d;
+
+    })
+
+});
+
+
+
 if (!window.indexedDB) {
     window.alert("Your browser doesn't support a stable version of IndexedDB.")
 }
@@ -36,6 +70,15 @@ const filterIds = {
     idnr: 'filter-idnr'
 }
 
+function encodeUnicode(str) {
+    // first we use encodeURIComponent to get percent-encoded UTF-8,
+    // then we convert the percent encodings into raw bytes which
+    // can be fed into btoa.
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+        function toSolidBytes(match, p1) {
+            return String.fromCharCode('0x' + p1);
+        }));
+}
 
 var db;
 var request = window.indexedDB.open("clientDb");
@@ -187,7 +230,7 @@ function readAll(filterfields, searchWords) {
             filterfields[k] = field.value
         });
     }
-    if(!searchWords){
+    if (!searchWords) {
         let searchStr = document.getElementById('google-field').value.trim();
         if (searchStr && searchStr.length >= 1) {
             searchWords = searchStr.split(' ');
@@ -255,17 +298,23 @@ function readAll(filterfields, searchWords) {
             if (addChild) {
                 let row = document.createElement('div');
                 row.id = cursor.key;
-                console.log(`${editingId} == ${row.id}`);
-                if(feashlyAddedClientId == row.id){
+                //console.log(`${editingId} == ${row.id}`);
+                if (feashlyAddedClientId == row.id) {
                     row.setAttribute('class', 'row m-0 client-row freshly-added');
                     feashlyAddedClientId = null;
-                }else if(editingId == row.id){
+                } else if (editingId == row.id) {
                     row.setAttribute('class', 'row m-0 client-row freshly-edited');
                     editingId = null;
-                }else{
+                } else {
                     row.setAttribute('class', 'row m-0 client-row');
                 }
                 row.innerHTML = `
+
+                <div class="col action-col">
+                    <button type="cutton" onclick="selectClient('${encodeUnicode(JSON.stringify(cursor.value))}')">
+                        ✔
+                    </button>
+                </div>
                 <div class="col overflow">${cursor.value.name || ''}</div>
                 <div class="col overflow">${cursor.value.email || ''}</div>
                 <div class="col col-tel overflow">${cursor.value.tel || ''}</div>
@@ -287,6 +336,42 @@ function readAll(filterfields, searchWords) {
             cursor.continue();
         } else {}
     };
+}
+
+
+function selectClient(client) {
+    let c = JSON.parse(atob(client));
+    //console.log(c);
+    localStorage.setItem('selected-client', client);
+    document.getElementById('shop-client-desc').value = `${c.name} (${c.email})`;
+    document.getElementById('button-generate-receipt').disabled = false;
+
+
+
+}
+
+function generateReceipt() {
+    try {
+        let count = document.getElementById('shop-count').value;
+
+
+        let itemname = document.getElementById('select-cars').value;
+        let item = items.find(c => c.name === itemname);
+        item['count'] = count;
+        // <logika-biznesowa>
+        item['total'] = count * item.price;
+        item['tax'] = item['total'] * 0.23;
+        // </logika-biznesowa>
+        localStorage.setItem('selected-item', encodeUnicode(JSON.stringify(item)));
+
+
+        //redirect to receipt.html
+        window.location.href = `receipt.html`;
+
+    } catch (err) {
+        console.log('could not generate receipt', err);
+    }
+
 }
 
 function remove(id) {
@@ -323,7 +408,6 @@ function applyFilter() {
         filterfields[k] = field.value
     });
     readAll(filterfields, null);
-    client.id = getClientHash(client);
 }
 
 
