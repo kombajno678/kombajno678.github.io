@@ -27,8 +27,12 @@
                 display: none !important;
             }
 
-            .container{
-                width:100% important;
+            .container {
+                width: 100% important;
+            }
+
+            body{
+                font-size: smaller;
             }
         }
     </style>
@@ -85,30 +89,19 @@
         <h1>Faktura</h1>
 
 
-        
+
 
         <div id="datetime"></div>
 
         <hr>
         <h3>Dane klienta:</h3>
         <div class="row">
-            <div class="col"><b>Imię nazwisko</b></div>
-            <div class="col"><b>Email</b></div>
-            <div class="col"><b>Telefon</b></div>
-            <div class="col"><b>Adres</b></div>
-            <div class="col"><b>Nr dowodu</b></div>
-        </div>
-        <div class="row">
-            <div class="col"
-                 id="client-name"></div>
-            <div class="col"
-                 id="client-email"></div>
-            <div class="col"
-                 id="client-tel"></div>
-            <div class="col"
-                 id="client-address"></div>
-            <div class="col"
-                 id="client-idnr"></div>
+            <div class="col-12 col-sm-12 col-md-6 col-xl-4 overflow"><b>Imię nazwisko: </b><span id="client-name"></span></div>
+            <div class="col-12 col-sm-12 col-md-6 col-xl-4 overflow"><b>Email: </b><span id="client-email"></span></div>
+            <div class="col-12 col-sm-12 col-md-6 col-xl-4 overflow"><b>Telefon: </b><span id="client-tel"></span></div>
+            <div class="col-12 col-sm-12 col-md-6 col-xl-4 overflow"><b>Adres: </b><span id="client-address"></span></div>
+            <div class="col-12 col-sm-12 col-md-6 col-xl-4 overflow"><b>Nr dowodu: </b><span id="client-idnr"></span></div>
+
         </div>
 
 
@@ -121,11 +114,9 @@
             <div class="col"><b>Ilość</b></div>
             <div class="col"><b>Suma</b></div>
             <div class="col"><b>Podatek</b></div>
-        </div>
+            <div class="w-100"></div>
 
-        <div class="row">
-            <div class="col"
-                 id="item-name"></div>
+            <div class="col"><span id="item-name"></span></div>
             <div class="col"><span id="item-price"></span>zł</div>
             <div class="col"
                  id="item-count"></div>
