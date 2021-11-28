@@ -15,7 +15,8 @@ export declare class Controls {
         dX: number;
         dY: number;
         dScroll: number;
-        dragging: boolean;
+        draggingLeftMB: boolean;
+        draggingMiddleMb: boolean;
     };
     static dMove: number[];
     static keyboardPressing: boolean;
