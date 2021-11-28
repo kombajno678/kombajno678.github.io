@@ -8,6 +8,6 @@ export declare class Spring extends Object3dTextured {
     endPoint: number[];
     startPoint: number[];
     shader: ShaderTextured;
-    constructor();
+    constructor(quality: number);
     generate(): void;
 }
