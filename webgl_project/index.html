@@ -1,26 +1,4 @@
-<!doctype html>
-<html lang="en">
-
-<head>
-      <meta charset="utf-8">
-      <title>WebGL Demo </title>
-
-      <meta name="viewport"
-            content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-
-
-      <link rel="stylesheet"
-            href="style.css"
-            type="text/css">
-
-      </script>
-      <script src="bundle.js"
-              type="module"></script>
-
-      <script type="x-shader/x-vertex"
-              id="vertexShader">
-
-            varying vec3 vWorldPosition;
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>WebGL Demo</title><meta name="viewport" content="width=device-width,user-scalable=no,minimum-scale=1,maximum-scale=1"><link rel="stylesheet" href="style.css"><script type="x-shader/x-vertex" id="vertexShader">varying vec3 vWorldPosition;
 
             void main() {
 
@@ -29,14 +7,7 @@
 
                   gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 
-            }
-
-      </script>
-
-      <script type="x-shader/x-fragment"
-              id="fragmentShader">
-
-            uniform vec3 topColor;
+            }</script><script type="x-shader/x-fragment" id="fragmentShader">uniform vec3 topColor;
             uniform vec3 bottomColor;
             uniform float offset;
             uniform float exponent;
@@ -48,16 +19,11 @@
                   float h = normalize( vWorldPosition + offset ).y;
                   gl_FragColor = vec4( mix( bottomColor, topColor, max( pow( max( h , 0.0), exponent ), 0.0 ) ), 1.0 );
 
-            }
-
-      </script>
-
-</head>
-
-<body>
-
-
-
-<script defer src="bundle.js"></script></body>
-
-</html>
+            }</script><style>body {
+                  padding: 0 !important;
+                  margin: 0 !important;
+                  overflow: hidden;
+                  /* Hide scrollbars */
+                  background-color: #ccc;
+                  color: #000;
+            }</style></head><body><script defer="defer" src="bundle.js"></script></body></html>
