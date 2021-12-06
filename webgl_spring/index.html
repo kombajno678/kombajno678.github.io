@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>WebGL Demo</title>
+  <link rel="stylesheet"
+        href="style.css"
+        type="text/css">
+
+  </script>
+  <script src="bundle.js"
+          type="module"></script>
+</head>
+
+<body>
+  <div class="overlay"> 
+    <div id="fps">fps = 144<br> time = 0</div>
+    <div id="resolution">0000x0000</div>
+
+
+    Quality (vertices per circle):
+    <input class="slider"
+           type="range"
+           min="1"
+           max="60"
+           value="5"
+           class="slider"
+           id="springQuality">
+    <input type="text"
+           id="springQuality_txt"
+           min="1"
+           max="60"
+           value="5">
+<br>
+    Rendering Quality:
+    <input class="slider"
+           type="range"
+           min="1"
+           max="200"
+           value="100"
+           class="slider"
+           id="resolutionQuality">
+    <input type="text"
+           id="resolutionQuality_txt"
+           min="1"
+           max="200"
+           value="100">
+
+           <p>
+             <h3>Controls:</h3>
+             <ul>
+               <li>mouse wheel: zoom</li>
+               <li>mouse drag: rotate</li>
+               <li>mouse drag with scroll wheel clicked: move</li>
+               <li>WSAD: move</li>
+               <li> R: reset</li>
+             </ul>
+           </p>
+  </div>
+
+    <canvas id="canvas"></canvas>
+
+  
+
+</body>
+
+</html>

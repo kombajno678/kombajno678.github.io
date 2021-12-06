@@ -1,0 +1,32 @@
+body{
+	padding:0!important;
+	margin:0!important;
+	overflow: hidden; /* Hide scrollbars */
+}
+
+
+canvas {
+	background-color: black;
+	width:100%;
+	height:100%;
+
+	image-rendering: -moz-crisp-edges;    /* Firefox */
+	image-rendering: -webkit-crisp-edges; /* Webkit (Safari) */
+	image-rendering: pixelated;           /* Chrome */
+
+}
+video {
+	display: none;
+}
+.slider{
+	width:200px;
+}
+#springQuality_txt, #resolutionQuality_txt{
+	width: 20px;
+}
+.overlay{
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.5);
+	padding:10px;
+	color: white;
+}
