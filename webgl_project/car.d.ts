@@ -1,0 +1,31 @@
+import * as THREE from "three";
+import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
+import { Wall } from "./wall";
+export declare class Car {
+    geometry: THREE.BoxGeometry;
+    lookaheadBox: THREE.BoxHelper;
+    lookaheadScale: number;
+    boundingBox: THREE.BoxHelper;
+    gltf: GLTF;
+    model: THREE.Group;
+    material: THREE.MeshPhongMaterial;
+    size: THREE.Vector3;
+    heightOffset: number;
+    boxLookAt: THREE.Vector3;
+    modelLookAt: THREE.Vector3;
+    position: THREE.Vector3;
+    driveDirection: THREE.Vector3;
+    velocity: THREE.Vector3;
+    speed: number;
+    maxSpeed: number;
+    height: number;
+    width: number;
+    length: number;
+    modelScale: number;
+    constructor(model: THREE.Group, maxSpeed: number, pos: THREE.Vector3, direction: THREE.Vector3);
+    setModel(model: THREE.Group, modelScale?: number): void;
+    setPosition(newPos: THREE.Vector3): void;
+    checkIfInFrontOfMe(object: Car | Wall): boolean;
+    logic(otherCars: Car[], walls: Wall[]): void;
+    drive(timeDelta: number): void;
+}
