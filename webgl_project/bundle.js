@@ -50457,8 +50457,8 @@ class Car {
         this.length = bbox.max.z - bbox.min.z;
         this.lookaheadBox.material.color.setHex(0xffffff);
         this.boundingBox.material.color.setHex(0xffffff);
-        this.lookaheadBox.scale.set(1, 6, 1);
-        this.lookaheadBox.position.z = -this.length / 2;
+        this.lookaheadBox.scale.set(1, 1, 1);
+        this.lookaheadBox.position.z = -this.length;
         this.lookaheadBox.updateMatrix();
         this.model.add(this.lookaheadBox);
         this.model.add(this.boundingBox);
@@ -50474,6 +50474,11 @@ class Car {
         this.position.set(newPos.x, newPos.y, newPos.z);
         this.model.position.set(this.position.x, this.position.y, this.position.z);
     }
+    updateBoundingBoxLookahead() {
+        this.lookaheadBoxBB = new THREE.Box3(); // me
+        this.lookaheadBox.geometry.computeBoundingBox();
+        this.lookaheadBoxBB.copy(this.lookaheadBox.geometry.boundingBox).applyMatrix4(this.lookaheadBox.matrixWorld);
+    }
     checkIfInFrontOfMe(object) {
         let a = (object.position.x - this.position.x);
         let b = (object.position.z - this.position.z);
@@ -50481,8 +50486,7 @@ class Car {
         if (d > 50) {
             return false;
         }
-        let box1 = new THREE.Box3(); //o ther object
-        let box2 = new THREE.Box3(); // me
+        let box1 = new THREE.Box3(); // other object
         if (object instanceof wall_1.Wall) {
             object.mesh.geometry.computeBoundingBox();
             box1.copy(object.mesh.geometry.boundingBox).applyMatrix4(object.mesh.matrixWorld);
@@ -50492,15 +50496,13 @@ class Car {
             object.boundingBox.geometry.computeBoundingBox();
             box1.copy(object.boundingBox.geometry.boundingBox).applyMatrix4(object.boundingBox.matrixWorld);
         }
-        this.lookaheadBox.geometry.computeBoundingBox();
-        box2.copy(this.lookaheadBox.geometry.boundingBox).applyMatrix4(this.lookaheadBox.matrixWorld);
-        // // box2.expandByVector(new Vector3(1, 0, 1));
-        return box1.intersectsBox(box2);
+        return box1.intersectsBox(this.lookaheadBoxBB);
     }
     logic(otherCars, walls) {
         // if no other car in front of me
         let canDrive = true;
         let carInFrontOfMe = null;
+        this.updateBoundingBoxLookahead();
         for (let i = 0; i < walls.length; i++) {
             if (walls[i].blocksCars) {
                 canDrive = !this.checkIfInFrontOfMe(walls[i]);
@@ -50544,10 +50546,11 @@ class Car {
         // }
         this.velocity.copy(this.driveDirection);
         this.velocity.multiplyScalar(this.speed);
-        this.lookaheadScale = 1 + this.velocity.length() / 10;
+        this.lookaheadScale = 1; //+this.velocity.length()/10;
         this.lookaheadBox.scale.z = this.lookaheadScale;
-        this.lookaheadBox.position.z = -(this.lookaheadScale * this.length) / 2;
         this.lookaheadBox.updateMatrix();
+        let length = this.length * this.lookaheadScale;
+        this.lookaheadBox.position.z = -(length / 2) - this.length / 2;
     }
     drive(timeDelta) {
         this.setPosition(this.position.addScaledVector(this.velocity, timeDelta));
@@ -50631,11 +50634,11 @@ let dirLight;
 let dirLightHelper;
 let hemiLight;
 let hemiLightHelper;
+let streetLights = [];
 let sky;
 let skyGeo;
 let skyMat;
 // let ground: THREE.Mesh;
-let maxCarsCount = 200;
 let cars;
 let walls = {
     all: [],
@@ -50651,6 +50654,30 @@ function loadCarModel(cars, onLoaded) {
                 if (child.type == 'Mesh') {
                     child.receiveShadow = true;
                     child.castShadow = true;
+                    let m = child;
+                    // @ts-ignore
+                    m.material.flatShading = true;
+                    // @ts-ignore
+                    if (m.material.name == "lightFront") {
+                        // @ts-ignore
+                        m.material.emissive = new THREE.Color(0xffffdd);
+                        // @ts-ignore
+                        m.material.emissiveIntensity = 2;
+                    }
+                    // @ts-ignore
+                    if (m.material.name == "lightBlue") {
+                        // @ts-ignore
+                        m.material.emissive = new THREE.Color(0x00aaff);
+                        // @ts-ignore
+                        m.material.emissiveIntensity = 1;
+                    }
+                    // @ts-ignore
+                    if (m.material.name == "lightBack") {
+                        // @ts-ignore
+                        m.material.emissive = new THREE.Color(0xff2200);
+                        // @ts-ignore
+                        m.material.emissiveIntensity = 1;
+                    }
                 }
             });
             carModels.push(gltf.scene);
@@ -50659,6 +50686,7 @@ function loadCarModel(cars, onLoaded) {
     });
     let f = () => {
         if (carModels.length >= carModelsNames.length) {
+            console.log(carModels);
             onLoaded();
             return;
         }
@@ -50714,15 +50742,16 @@ const state = {
     time: {
         clock: false,
         updateTimeOfDay: false,
-        timeOfDay: 0,
+        timeOfDay: -12,
     },
     lights: {
         castShadow: false,
         shadowResolution: (1024 * 4),
     },
     cars: {
-        boundingBox: true,
-        lookaheadBox: true,
+        boundingBox: false,
+        lookaheadBox: false,
+        maxCarsCount: 200,
     }
 };
 function initGui(container) {
@@ -50733,6 +50762,10 @@ function initGui(container) {
     const lightsFolder = gui.addFolder("lights");
     lightsFolder.add(state.lights, "castShadow", true).onChange(() => {
         dirLight.castShadow = state.lights.castShadow;
+        walls.all.forEach(w => {
+            w.light.castShadow = state.lights.castShadow; // default false
+        });
+        streetLights.forEach(l => l.castShadow = state.lights.castShadow);
     });
     const timeFolder = gui.addFolder("time");
     timeFolder.add(state.time, "updateTimeOfDay", true);
@@ -50751,6 +50784,18 @@ function initGui(container) {
         .onChange(() => {
         updateTimeOfDay((state.time.timeOfDay / 24) * (Math.PI * 8));
     });
+    const carsFolder = gui.addFolder("cars");
+    carsFolder.add(state.cars, "boundingBox", false).onChange(() => {
+        cars.forEach(c => {
+            c.boundingBox.visible = state.cars.boundingBox;
+        });
+    });
+    carsFolder.add(state.cars, "lookaheadBox", false).onChange(() => {
+        cars.forEach(c => {
+            c.lookaheadBox.visible = state.cars.lookaheadBox;
+        });
+    });
+    carsFolder.add(state.cars, "maxCarsCount", 0, 1000, 1);
 }
 function initLights() {
     hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.05);
@@ -50771,13 +50816,16 @@ function initLights() {
     dirLight.shadow.camera.bottom = -d;
     dirLight.shadow.camera.near = 200;
     dirLight.shadow.camera.far = 1500;
-    dirLight.shadow.bias = -0.001;
+    dirLight.shadow.bias = 0; //0.01;
     dirLightHelper = new THREE.DirectionalLightHelper(dirLight, 100);
 }
 function spawnCars() {
     carSpawnPoints.forEach((spawn) => {
         spawn.positions.forEach((pos) => {
             let canSpawn = true;
+            if (cars.length >= state.cars.maxCarsCount) {
+                return;
+            }
             for (let index = 0; index < cars.length; index++) {
                 const c = cars[index];
                 if (spawn.direction.x != 0) {
@@ -50799,6 +50847,8 @@ function spawnCars() {
             let speed = Math.random() * 80 + 80;
             let randomModel = carModels[Math.floor(Math.random() * carModels.length)];
             let car = new car_1.Car(randomModel.clone(), speed, pos, spawn.direction);
+            car.lookaheadBox.visible = state.cars.lookaheadBox;
+            car.boundingBox.visible = state.cars.boundingBox;
             cars.push(car);
             scene.add(car.model);
             scene.remove(car.lookaheadBox);
@@ -50807,74 +50857,87 @@ function spawnCars() {
     });
 }
 function initWalls() {
-    let x = 50; // distance from center
+    let x = 70; // distance from center
     let width = 40;
-    let height = 2;
-    let y_pos = 20;
+    let height = 20;
+    let y_pos = 0;
     let offset = new THREE.Vector3(-x, 0, 10);
     let wall_x_left = new wall_1.Wall(width, height, 1);
     wall_x_left.init();
-    wall_x_left.rotate((Math.PI * 1) / 2);
     wall_x_left.setPosition(new THREE.Vector3(-x, y_pos, width / 2));
+    wall_x_left.rotate(-Math.PI / 2);
     wall_x_left.blocksCars = true;
     let wall_x_right = new wall_1.Wall(width, height, 1);
     wall_x_right.init();
-    wall_x_right.rotate((Math.PI * 1) / 2);
     wall_x_right.setPosition(new THREE.Vector3(x, y_pos, -(width / 2)));
+    wall_x_right.rotate(Math.PI / 2);
     wall_x_right.blocksCars = true;
     walls.x = [wall_x_left, wall_x_right];
     walls.all.push(wall_x_left, wall_x_right);
     let wall_z_up = new wall_1.Wall(width, height, 1);
     wall_z_up.init();
-    wall_z_up.rotate(Math.PI);
     wall_z_up.setPosition(new THREE.Vector3(width / 2, y_pos, x));
+    // wall_z_up.rotate(Math.PI + Math.PI );
     wall_z_up.blocksCars = false;
     let wall_z_down = new wall_1.Wall(width, height, 1);
     wall_z_down.init();
-    wall_z_down.rotate(Math.PI);
     wall_z_down.setPosition(new THREE.Vector3(-(width / 2), y_pos, -x));
+    wall_z_down.rotate(-Math.PI);
     wall_z_down.blocksCars = false;
     walls.z = [wall_z_up, wall_z_down];
     walls.all.push(wall_z_up, wall_z_down);
-    walls.all.forEach((w) => { scene.add(w.mesh); scene.add(w.stick); });
+    walls.all.forEach((w) => { w.mesh.visible = false; });
+    walls.all.forEach((w) => { scene.add(w.group); });
 }
 function initWorld() {
     const geometry = new THREE.BoxGeometry(1, 1, 1);
-    // geometry.translate(0, 0.5, 0);
-    const material = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        flatShading: true,
-    });
-    let range = 1000;
     cars = [];
     loadCarModel(cars, spawnCars);
     initWalls();
-    //buildings
-    let size = new THREE.Vector3(60, 60, 60);
     var texture = new THREE.TextureLoader();
-    // defines variables to make things easier
-    var counter, textures = [], materials = [];
-    let txtPaths = [
-        `images/building_side.png`,
-        `images/building_side.png`,
-        `images/building_top.png`,
-        `images/building_bottom.png`,
-        `images/building_side.png`,
-        `images/building_side.png`,
-    ];
-    // iterate through all 6 sides of the cube
-    for (counter = 0; counter < 6; counter++) {
-        // loads and stores a texture (you might run into some problems with loading images directly from a source because of security protocols, so copying the image data is a for sure way to get the image to load)
-        textures[counter] = texture.load(txtPaths[counter]);
-        // creates material from previously stored texture
-        materials.push(new THREE.MeshPhongMaterial({ map: textures[counter] }));
+    let buildingMaterials = [];
+    for (let buildingIndex = 0; buildingIndex < 4; buildingIndex++) {
+        // defines variables to make things easier
+        var counter, textures = [], materials = [];
+        let txtPaths = [
+            `images/side${buildingIndex + 1}.png`,
+            `images/side${buildingIndex + 1}.png`,
+            `images/building_top.png`,
+            `images/building_bottom.png`,
+            `images/side${buildingIndex + 1}.png`,
+            `images/side${buildingIndex + 1}.png`,
+        ];
+        // iterate through all 6 sides of the cube
+        for (counter = 0; counter < 6; counter++) {
+            // loads and stores a texture (you might run into some problems with loading images directly from a source because of security protocols, so copying the image data is a for sure way to get the image to load)
+            textures[counter] = texture.load(txtPaths[counter]);
+            // creates material from previously stored texture
+            materials.push(new THREE.MeshPhongMaterial({ map: textures[counter], flatShading: true }));
+        }
+        buildingMaterials.push(materials);
     }
     for (let x = -10; x < 10; x++) {
         for (let z = -10; z < 10; z++) {
             if (x == 0 || z == 0) {
+                if (x % 4 == 0 && z % 4 == 0) {
+                    let light = new THREE.PointLight(0xffffaa, 0.5, 100);
+                    light.position.x = x * (80) + (z % 4 == 0 ? 20 : -20);
+                    light.position.y = 20;
+                    light.position.z = z * (80) + (x % 4 == 0 ? 20 : -20);
+                    scene.add(light);
+                    if (x == 0 && z == 0) {
+                        light.shadow.mapSize.width = 64;
+                        light.shadow.mapSize.height = 64;
+                        light.shadow.camera.near = 5;
+                        light.shadow.camera.far = 50;
+                        streetLights.push(light);
+                    }
+                }
                 continue;
             }
-            let mesh = new THREE.Mesh(geometry, materials);
+            let buildingIndex = Math.floor(Math.random() * 4);
+            let mesh = new THREE.Mesh(geometry, buildingMaterials[buildingIndex]);
+            let size = new THREE.Vector3(60, Math.random() * 40 + 50, 60);
             mesh.scale.copy(size);
             mesh.updateMatrix();
             mesh.position.x = x * (size.x + 20);
@@ -50977,7 +51040,7 @@ function addGround() {
         let txt = groundMesh.material.map;
         if (txt.matrixAutoUpdate === true) {
             texture.offset.set(0, 0);
-            texture.repeat.set(length / 2, width / 2);
+            texture.repeat.set(length / 10, width / 10);
             texture.center.set(0, 0);
             texture.rotation = rotate.x; // rotation is around [ 0.5, 0.5 ]
         }
@@ -51111,6 +51174,7 @@ function init() {
     initSky();
     initGui(container);
     window.addEventListener("resize", onWindowResize);
+    updateTimeOfDay((state.time.timeOfDay / 24) * (Math.PI * 8));
 }
 animate();
 function onWindowResize() {
@@ -51187,10 +51251,10 @@ function render() {
     secondPassed += delta;
     if (secondPassed > 1) {
         secondPassed = 0;
-        if (cars.length < maxCarsCount) {
+        if (cars.length < state.cars.maxCarsCount) {
             spawnCars();
         }
-        console.log(`number of cars : ${cars.length}/${maxCarsCount}; scene.children.length : ${scene.children.length}`);
+        // console.log(`number of cars : ${cars.length}/${state.cars.maxCarsCount}; scene.children.length : ${scene.children.length}`)
     }
     if (state.time.updateTimeOfDay) {
         updateTimeOfDay(elapsed);
@@ -51245,7 +51309,7 @@ class Wall {
         // this.geometry.translate(0, 0.5, 0);
         this.material = new THREE.MeshPhongMaterial({
             color: 0x2222ff,
-            flatShading: true,
+            flatShading: false,
         });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         let heightOffset = this.size.y / 2;
@@ -51256,46 +51320,65 @@ class Wall {
         // this.mesh.lookAt(lookAt.x, lookAt.y+heightOffset, lookAt.z);
         this.mesh.updateMatrix();
         // this.mesh.matrixAutoUpdate = false;
-        this.mesh.castShadow = true;
-        this.mesh.receiveShadow = true;
+        // this.mesh.castShadow = true;
+        // this.mesh.receiveShadow = true;
         this.stick = new THREE.Mesh(new THREE.BoxGeometry(2, 20, 2), new THREE.MeshPhongMaterial({
             color: 0x343434,
             flatShading: true,
         }));
-        this.stick.castShadow = true;
-        this.stick.receiveShadow = true;
-        this.stick.position.x = this.position.x;
-        this.stick.position.y = this.position.y;
-        this.stick.position.z = this.position.z;
-        // this.stick.translateZ(this.size.z/2);
+        this.bar = new THREE.Mesh(new THREE.BoxGeometry(this.size.x, 2, 2), new THREE.MeshPhongMaterial({
+            color: 0x343434,
+            flatShading: true,
+        }));
+        this.light = new THREE.PointLight(0xffffff, 2, 50);
+        this.lightMesh = new THREE.Mesh(new THREE.SphereGeometry(1.25, 6, 6), this.material);
+        this.light.shadow.mapSize.width = 64;
+        this.light.shadow.mapSize.height = 64;
+        this.light.shadow.camera.near = 5;
+        this.light.shadow.camera.far = 50;
+        this.light.shadow.bias = 0.0001;
+        this.light.add(this.lightMesh);
         this.stick.translateX(this.size.x / 2);
+        this.stick.translateY(heightOffset);
+        this.bar.translateY(this.size.y);
+        this.light.translateY(this.size.y);
+        this.light.translateZ(1.5);
+        this.group = new THREE.Group();
+        this.group.add(this.mesh);
+        this.group.add(this.stick);
+        this.group.add(this.bar);
+        this.group.add(this.light);
+        this.group.castShadow = true;
     }
     rotate(angle) {
-        // this.mesh.rotateY(angle);
-        this.rotation = angle;
-        this.mesh.rotateOnAxis(new THREE.Vector3(0, 1, 0), angle);
-        this.stick.rotateOnAxis(new THREE.Vector3(0, 1, 0), angle);
-        this.mesh.updateMatrix();
-        this.stick.updateMatrix();
+        // this.rotation = angle;
+        // this.mesh.rotateOnAxis(new THREE.Vector3(0, 1, 0), angle);
+        // this.stick.rotateOnAxis(new THREE.Vector3(0, 1, 0), angle);
+        // this.bar.rotateOnAxis(new THREE.Vector3(0, 1, 0), angle);
+        // this.light.rotateOnAxis(new THREE.Vector3(0, 1, 0), angle);
+        // this.mesh.updateMatrix();
+        // this.light.updateMatrix();
+        // this.stick.updateMatrix();
+        // this.bar.updateMatrix();
+        this.group.rotateY(angle);
+        this.group.updateMatrix();
     }
     setPosition(newPos) {
-        this.position.copy(newPos);
         let heightOffset = this.size.y / 2;
-        this.mesh.position.x = this.position.x;
-        this.mesh.position.y = this.position.y - heightOffset;
-        this.mesh.position.z = this.position.z;
-        this.stick.position.x = this.position.x;
-        this.stick.position.y = this.position.y / 2;
-        this.stick.position.z = this.position.z;
-        // to make stikc on the side of pavement
-        if (this.rotation != Math.PI) {
-            this.stick.translateX(this.size.x / 2 * (this.position.x < 0 ? -1 : 1));
-        }
-        else {
-            this.stick.translateX(this.size.x / 2 * (this.position.x < 0 ? 1 : -1));
-        }
-        this.mesh.updateMatrix();
-        this.stick.updateMatrix();
+        // this.mesh.position.x = newPos.x;
+        // this.mesh.position.y = newPos.y - heightOffset;
+        // this.mesh.position.z = newPos.z;
+        // this.stick.translateX(-this.position.x + newPos.x);
+        // this.stick.translateZ(-this.position.z + newPos.z);
+        // this.bar.position.set(newPos.x, newPos.y - 1, newPos.z)
+        // this.light.position.set(newPos.x, newPos.y - 3, newPos.z);
+        // this.mesh.updateMatrix();
+        // this.stick.updateMatrix();
+        // this.light.updateMatrix();
+        // this.bar.updateMatrix();
+        this.group.position.set(newPos.x, newPos.y, newPos.z);
+        this.group.updateMatrix();
+        this.position.copy(newPos);
     }
     toggle() {
         this.blocksCars = !this.blocksCars;
@@ -51303,13 +51386,15 @@ class Wall {
     logic() {
         if (this.blocksCars) {
             this.material.color.setHex(0xff2222);
-            // this.material.emissive = new THREE.Color(0xff2222);
-            // this.material.emissiveIntensity = 1;
+            this.light.color.setHex(0xff2222);
+            this.material.emissive = new THREE.Color(0xff2222);
+            this.material.emissiveIntensity = 1;
         }
         else {
             this.material.color.setHex(0x22ff22);
-            // this.material.emissive = new THREE.Color(0x22ff22);
-            // this.material.emissiveIntensity = 1;
+            this.light.color.setHex(0x22ff22);
+            this.material.emissive = new THREE.Color(0x22ff22);
+            this.material.emissiveIntensity = 1;
         }
         this.mesh.updateMatrix();
     }

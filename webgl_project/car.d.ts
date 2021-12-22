@@ -4,6 +4,7 @@ import { Wall } from "./wall";
 export declare class Car {
     geometry: THREE.BoxGeometry;
     lookaheadBox: THREE.BoxHelper;
+    lookaheadBoxBB: THREE.Box3;
     lookaheadScale: number;
     boundingBox: THREE.BoxHelper;
     gltf: GLTF;
@@ -25,6 +26,7 @@ export declare class Car {
     constructor(model: THREE.Group, maxSpeed: number, pos: THREE.Vector3, direction: THREE.Vector3);
     setModel(model: THREE.Group, modelScale?: number): void;
     setPosition(newPos: THREE.Vector3): void;
+    updateBoundingBoxLookahead(): void;
     checkIfInFrontOfMe(object: Car | Wall): boolean;
     logic(otherCars: Car[], walls: Wall[]): void;
     drive(timeDelta: number): void;
