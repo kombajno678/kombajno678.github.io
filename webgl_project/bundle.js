@@ -50502,11 +50502,13 @@ class Car {
         // if no other car in front of me
         let canDrive = true;
         let carInFrontOfMe = null;
+        // let distance:number = 0;
         this.updateBoundingBoxLookahead();
         for (let i = 0; i < walls.length; i++) {
             if (walls[i].blocksCars) {
                 canDrive = !this.checkIfInFrontOfMe(walls[i]);
                 if (!canDrive) {
+                    // distance = walls[i].position.clone().sub(this.position).length();
                     break;
                 }
             }
@@ -50520,6 +50522,7 @@ class Car {
                 canDrive = !this.checkIfInFrontOfMe(car);
                 if (!canDrive) {
                     carInFrontOfMe = car;
+                    // distance = carInFrontOfMe.position.clone().sub(this.position).length();
                     break;
                 }
             }
@@ -50538,15 +50541,9 @@ class Car {
             }
             this.speed = 0;
         }
-        // if (this.speed <= 1) {
-        //   this.speed = 0
-        // }
-        // if (this.speed >= this.maxSpeed) {
-        //   this.speed = this.maxSpeed
-        // }
         this.velocity.copy(this.driveDirection);
         this.velocity.multiplyScalar(this.speed);
-        this.lookaheadScale = 1; //+this.velocity.length()/10;
+        this.lookaheadScale = 1;
         this.lookaheadBox.scale.z = this.lookaheadScale;
         this.lookaheadBox.updateMatrix();
         let length = this.length * this.lookaheadScale;
@@ -50740,12 +50737,12 @@ const state = {
         lightsClearTime: 3,
     },
     time: {
-        clock: false,
+        clock: true,
         updateTimeOfDay: false,
         timeOfDay: -12,
     },
     lights: {
-        castShadow: false,
+        sunCastShadow: false,
         shadowResolution: (1024 * 4),
     },
     cars: {
@@ -50760,16 +50757,16 @@ function initGui(container) {
     timesFolder.add(state.lightTimes, "lightsTime", 0, 10, 0.5);
     timesFolder.add(state.lightTimes, "lightsClearTime", 0, 10, 0.5);
     const lightsFolder = gui.addFolder("lights");
-    lightsFolder.add(state.lights, "castShadow", true).onChange(() => {
-        dirLight.castShadow = state.lights.castShadow;
-        walls.all.forEach(w => {
-            w.light.castShadow = state.lights.castShadow; // default false
-        });
-        streetLights.forEach(l => l.castShadow = state.lights.castShadow);
+    lightsFolder.add(state.lights, "sunCastShadow", true).onChange(() => {
+        dirLight.castShadow = state.lights.sunCastShadow;
+        // walls.all.forEach(w => {
+        //   w.light.castShadow = state.lights.sunCastShadow; // default false
+        // });
+        // streetLights.forEach(l => l.castShadow = state.lights.sunCastShadow);
     });
     const timeFolder = gui.addFolder("time");
     timeFolder.add(state.time, "updateTimeOfDay", true);
-    timeFolder.add(state.time, "clock", false).onChange(() => {
+    let handleClockChange = () => {
         if (state.time.clock == false) {
             clock.stop();
             lightsClock.stop();
@@ -50778,7 +50775,9 @@ function initGui(container) {
             clock.start();
             lightsClock.start();
         }
-    });
+    };
+    timeFolder.add(state.time, "clock", true).onChange(handleClockChange);
+    handleClockChange();
     timeFolder
         .add(state.time, "timeOfDay", -12, 12, 0.1) //25.1327412287
         .onChange(() => {
@@ -50805,7 +50804,7 @@ function initLights() {
     hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 10);
     dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
     dirLight.position.set(100, 100, 100);
-    dirLight.castShadow = state.lights.castShadow;
+    dirLight.castShadow = state.lights.sunCastShadow;
     // dirLight.shadow.autoUpdate = true;
     dirLight.shadow.mapSize.width = state.lights.shadowResolution;
     dirLight.shadow.mapSize.height = state.lights.shadowResolution;
@@ -50919,30 +50918,33 @@ function initWorld() {
     for (let x = -10; x < 10; x++) {
         for (let z = -10; z < 10; z++) {
             if (x == 0 || z == 0) {
-                if (x % 4 == 0 && z % 4 == 0) {
+                if (x == 0 && z == 0) {
                     let light = new THREE.PointLight(0xffffaa, 0.5, 100);
-                    light.position.x = x * (80) + (z % 4 == 0 ? 20 : -20);
+                    light.position.x = x * (80);
                     light.position.y = 20;
-                    light.position.z = z * (80) + (x % 4 == 0 ? 20 : -20);
+                    light.position.z = z * (80);
+                    streetLights.push(light);
                     scene.add(light);
-                    if (x == 0 && z == 0) {
-                        light.shadow.mapSize.width = 64;
-                        light.shadow.mapSize.height = 64;
-                        light.shadow.camera.near = 5;
-                        light.shadow.camera.far = 50;
-                        streetLights.push(light);
-                    }
+                    continue;
+                }
+                if (x % 2 == 0 && z % 2 == 0) {
+                    let light = new THREE.PointLight(0xffffaa, 0.5, 75);
+                    light.position.x = x * (80) + (z % 4 == 0 ? 30 : -30);
+                    light.position.y = 20;
+                    light.position.z = z * (80) + (x % 4 == 0 ? 30 : -30);
+                    streetLights.push(light);
+                    scene.add(light);
                 }
                 continue;
             }
             let buildingIndex = Math.floor(Math.random() * 4);
             let mesh = new THREE.Mesh(geometry, buildingMaterials[buildingIndex]);
-            let size = new THREE.Vector3(60, Math.random() * 40 + 50, 60);
+            let size = new THREE.Vector3(60 + Math.random() * 15, (Math.random() * (80 * (Math.abs(x) + Math.abs(z)) / 5) + 30), 60 + Math.random() * 15);
             mesh.scale.copy(size);
             mesh.updateMatrix();
-            mesh.position.x = x * (size.x + 20);
+            mesh.position.x = x * (80);
             mesh.position.y = size.y / 2;
-            mesh.position.z = z * (size.z + 20);
+            mesh.position.z = z * (80);
             mesh.updateMatrix();
             mesh.castShadow = true;
             mesh.receiveShadow = true;
@@ -51019,8 +51021,8 @@ function addCrossroad(pos) {
     });
 }
 function addGround() {
-    let length = 1000;
-    let width = 1000;
+    let length = 1600;
+    let width = 1600;
     let rotate = new THREE.Vector3(-Math.PI / 2, 0, 0);
     let roadGeometry = new THREE.PlaneGeometry(width, length, 100, 100);
     new THREE.TextureLoader().load("images/tile.png", function (texture) {
@@ -51029,7 +51031,7 @@ function addGround() {
         //texture.matrixAutoUpdate = false; // default true; set to false to update texture.matrix manually
         const material = new THREE.MeshPhongMaterial({ map: texture });
         let groundMesh = new THREE.Mesh(roadGeometry, material);
-        groundMesh.position.set(0, -1, 0);
+        groundMesh.position.set(0, -0.1, 0);
         groundMesh.rotation.x = rotate.x;
         groundMesh.rotation.y = rotate.y;
         groundMesh.rotation.z = rotate.z;
@@ -51110,6 +51112,8 @@ function updateTimeOfDay(timeElapsed) {
     let x_uniform = -1 + (1 + Math.sin(timeElapsed / 4));
     let height_uniform = -1 + (1 + Math.cos(timeElapsed / 4));
     let brightness = (height_uniform + 1) / 2;
+    streetLights.forEach(l => l.intensity = (1 - brightness));
+    walls.all.forEach(w => w.light.intensity = 2 * (1 - brightness));
     scene.background = new THREE.Color().setHSL(0.6, 0, 0.2 * brightness);
     // scene.fog = new THREE.Fog(scene.background, 1, 10000);
     dirLight.intensity = brightness;
@@ -51161,10 +51165,10 @@ function init() {
     addGround();
     addCrossroad(new THREE.Vector3(0, 0, 0));
     let d = 40;
-    addRoad(new THREE.Vector3(0, 0, d), new THREE.Vector3(0, 0, 1000)); //west
-    addRoad(new THREE.Vector3(0, 0, -d), new THREE.Vector3(0, 0, -1000)); // east
-    addRoad(new THREE.Vector3(d, 0, 0), new THREE.Vector3(1000, 0, 0)); // south
-    addRoad(new THREE.Vector3(-d, 0, 0), new THREE.Vector3(-1000, 0, 0)); // north
+    addRoad(new THREE.Vector3(0, 0, d), new THREE.Vector3(0, 0, 800)); //west
+    addRoad(new THREE.Vector3(0, 0, -d), new THREE.Vector3(0, 0, -800)); // east
+    addRoad(new THREE.Vector3(d, 0, 0), new THREE.Vector3(800, 0, 0)); // south
+    addRoad(new THREE.Vector3(-d, 0, 0), new THREE.Vector3(-800, 0, 0)); // north
     initLights();
     // scene.add(dirLightHelper);
     scene.add(dirLight);
@@ -51316,12 +51320,7 @@ class Wall {
         this.mesh.position.x = this.position.x;
         this.mesh.position.y = this.position.y + heightOffset;
         this.mesh.position.z = this.position.z;
-        // let lookAt = new THREE.Vector3(0, 0, 0);
-        // this.mesh.lookAt(lookAt.x, lookAt.y+heightOffset, lookAt.z);
         this.mesh.updateMatrix();
-        // this.mesh.matrixAutoUpdate = false;
-        // this.mesh.castShadow = true;
-        // this.mesh.receiveShadow = true;
         this.stick = new THREE.Mesh(new THREE.BoxGeometry(2, 20, 2), new THREE.MeshPhongMaterial({
             color: 0x343434,
             flatShading: true,
@@ -51332,11 +51331,11 @@ class Wall {
         }));
         this.light = new THREE.PointLight(0xffffff, 2, 50);
         this.lightMesh = new THREE.Mesh(new THREE.SphereGeometry(1.25, 6, 6), this.material);
-        this.light.shadow.mapSize.width = 64;
-        this.light.shadow.mapSize.height = 64;
-        this.light.shadow.camera.near = 5;
-        this.light.shadow.camera.far = 50;
-        this.light.shadow.bias = 0.0001;
+        this.light.shadow.mapSize.width = 16;
+        this.light.shadow.mapSize.height = 16;
+        this.light.shadow.camera.near = 15;
+        this.light.shadow.camera.far = 25;
+        this.light.shadow.bias = 0;
         this.light.add(this.lightMesh);
         this.stick.translateX(this.size.x / 2);
         this.stick.translateY(heightOffset);
@@ -51348,34 +51347,16 @@ class Wall {
         this.group.add(this.stick);
         this.group.add(this.bar);
         this.group.add(this.light);
-        this.group.castShadow = true;
+        this.stick.receiveShadow = true;
+        this.stick.castShadow = true;
+        this.bar.receiveShadow = true;
+        this.bar.castShadow = true;
     }
     rotate(angle) {
-        // this.rotation = angle;
-        // this.mesh.rotateOnAxis(new THREE.Vector3(0, 1, 0), angle);
-        // this.stick.rotateOnAxis(new THREE.Vector3(0, 1, 0), angle);
-        // this.bar.rotateOnAxis(new THREE.Vector3(0, 1, 0), angle);
-        // this.light.rotateOnAxis(new THREE.Vector3(0, 1, 0), angle);
-        // this.mesh.updateMatrix();
-        // this.light.updateMatrix();
-        // this.stick.updateMatrix();
-        // this.bar.updateMatrix();
         this.group.rotateY(angle);
         this.group.updateMatrix();
     }
     setPosition(newPos) {
-        let heightOffset = this.size.y / 2;
-        // this.mesh.position.x = newPos.x;
-        // this.mesh.position.y = newPos.y - heightOffset;
-        // this.mesh.position.z = newPos.z;
-        // this.stick.translateX(-this.position.x + newPos.x);
-        // this.stick.translateZ(-this.position.z + newPos.z);
-        // this.bar.position.set(newPos.x, newPos.y - 1, newPos.z)
-        // this.light.position.set(newPos.x, newPos.y - 3, newPos.z);
-        // this.mesh.updateMatrix();
-        // this.stick.updateMatrix();
-        // this.light.updateMatrix();
-        // this.bar.updateMatrix();
         this.group.position.set(newPos.x, newPos.y, newPos.z);
         this.group.updateMatrix();
         this.position.copy(newPos);
